@@ -11,7 +11,7 @@ const AnnotationTool = () => {
   return (
     <>
       <div
-        className={`flex flex-col h-screen ${
+        className={`flex bg-[#fbfbfc] flex-col h-screen ${
           isFullscreen ? "fixed inset-0 z-50 bg-background" : ""
         }`}
       >

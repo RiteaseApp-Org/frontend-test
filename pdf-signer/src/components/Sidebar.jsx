@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import { DocumentViewer } from "./document-viewer";
 // import { UploadDocumentDialog } from "./upload-document-dialog";
+import { cn } from "@/lib/utils";
 
 const Sidebar = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -54,14 +55,19 @@ const Sidebar = () => {
 
   return (
     <>
-      <div className="w-16 md:w-20 border-r bg-background flex flex-col items-center py-4 gap-6">
+      <div className="w-16 md:w-20 border-r border-slate-200 dark:border-slate-800 bg-background flex flex-col items-center py-4 gap-6">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 variant={selectedTool === "highlight" ? "secondary" : "ghost"}
                 size="icon"
-                className="rounded-xl"
+                className={cn(
+                  "rounded-xl transition-all duration-200",
+                  selectedTool === "highlight" 
+                    ? "bg-secondary shadow-md" 
+                    : "hover:bg-secondary/80 hover:shadow-sm"
+                )}
                 onClick={() => handleToolSelect("highlight")}
               >
                 <Highlighter className="h-5 w-5" />
@@ -78,7 +84,12 @@ const Sidebar = () => {
               <Button
                 variant={selectedTool === "underline" ? "secondary" : "ghost"}
                 size="icon"
-                className="rounded-xl"
+                className={cn(
+                  "rounded-xl transition-all duration-200",
+                  selectedTool === "underline" 
+                    ? "bg-secondary shadow-md" 
+                    : "hover:bg-secondary/80 hover:shadow-sm"
+                )}
                 onClick={() => handleToolSelect("underline")}
               >
                 <Underline className="h-5 w-5" />
@@ -95,7 +106,12 @@ const Sidebar = () => {
               <Button
                 variant={selectedTool === "comment" ? "secondary" : "ghost"}
                 size="icon"
-                className="rounded-xl"
+                className={cn(
+                  "rounded-xl transition-all duration-200",
+                  selectedTool === "comment" 
+                    ? "bg-secondary shadow-md" 
+                    : "hover:bg-secondary/80 hover:shadow-sm"
+                )}
                 onClick={() => handleToolSelect("comment")}
               >
                 <MessageSquare className="h-5 w-5" />
@@ -112,7 +128,12 @@ const Sidebar = () => {
               <Button
                 variant={selectedTool === "draw" ? "secondary" : "ghost"}
                 size="icon"
-                className="rounded-xl"
+                className={cn(
+                  "rounded-xl transition-all duration-200",
+                  selectedTool === "draw" 
+                    ? "bg-secondary shadow-md" 
+                    : "hover:bg-secondary/80 hover:shadow-sm"
+                )}
                 onClick={() => handleToolSelect("draw")}
               >
                 <Pen className="h-5 w-5" />
@@ -129,7 +150,12 @@ const Sidebar = () => {
               <Button
                 variant={selectedTool === "signature" ? "secondary" : "ghost"}
                 size="icon"
-                className="rounded-xl"
+                className={cn(
+                  "rounded-xl transition-all duration-200",
+                  selectedTool === "signature" 
+                    ? "bg-secondary shadow-md" 
+                    : "hover:bg-secondary/80 hover:shadow-sm"
+                )}
                 onClick={() => handleToolSelect("signature")}
               >
                 <Signature className="h-5 w-5" />
