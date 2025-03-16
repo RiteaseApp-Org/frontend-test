@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Sidebar from "./Sidebar";
+import { UploadDocumentDialog } from "./upload-document-dialog";
+import TopToolBar from "./TopToolBar";
 
 const AnnotationTool = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -13,7 +15,7 @@ const AnnotationTool = () => {
           isFullscreen ? "fixed inset-0 z-50 bg-background" : ""
         }`}
       >
-        <Top_ToolBar />
+        <TopToolBar />
 
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />

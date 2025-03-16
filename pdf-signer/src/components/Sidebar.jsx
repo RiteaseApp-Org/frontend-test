@@ -26,7 +26,7 @@ const Sidebar = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(5);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
-  const [selectedTool, setSelectedTool] = (useState < string) | (null > null);
+  const [selectedTool, setSelectedTool] = useState(null);
 
   const handleZoomIn = () => {
     setZoomLevel((prev) => Math.min(prev + 10, 200));
