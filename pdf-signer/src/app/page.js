@@ -1,7 +1,9 @@
+import AnnotationTool from "@/components/AnnotationTool";
+
 export default function Home() {
   return (
     <div>
-      <h1>Hello World</h1>
+      <AnnotationTool />
     </div>
   );
 }

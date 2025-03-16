@@ -53,8 +53,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex flex-1 overflow-hidden">
-      {/* Sidebar */}
+    <>
       <div className="w-16 md:w-20 border-r bg-background flex flex-col items-center py-4 gap-6">
         <TooltipProvider>
           <Tooltip>
@@ -150,7 +149,7 @@ const Sidebar = () => {
           selectedTool={selectedTool}
         />
       </div>
-    </div>
+    </>
   );
 };
 
