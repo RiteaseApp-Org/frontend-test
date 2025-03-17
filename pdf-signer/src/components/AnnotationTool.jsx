@@ -8,6 +8,7 @@ import TopToolBar from "./TopToolBar";
 const AnnotationTool = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
+  
   return (
     <>
       <div
@@ -15,7 +16,7 @@ const AnnotationTool = () => {
           isFullscreen ? "fixed inset-0 z-50 bg-background" : ""
         }`}
       >
-        <TopToolBar />
+        <TopToolBar showUploadDialog={showUploadDialog} setShowUploadDialog={setShowUploadDialog} />
 
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />

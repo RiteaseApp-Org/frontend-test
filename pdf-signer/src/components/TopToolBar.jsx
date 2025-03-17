@@ -20,12 +20,12 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-export const Top_ToolBar = () => {
+export const Top_ToolBar = ({setShowUploadDialog}) => {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(100)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(5)
-  const [showUploadDialog, setShowUploadDialog] = useState(false)
+
   const [selectedTool, setSelectedTool] = useState(null)
 
   const handleZoomIn = () => {
