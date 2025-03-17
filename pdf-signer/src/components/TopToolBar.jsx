@@ -53,12 +53,12 @@ export const Top_ToolBar = () => {
   }
 
   return (
-    <div className="flex items-center justify-between border-b p-2 bg-background">
+    <div className="flex items-center justify-between border-b p-2 border-slate-200 dark:border-slate-800 bg-background">
       <div className="flex items-center gap-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={() => setShowUploadDialog(true)}>
+              <Button className="cursor-pointer" variant="ghost" size="icon" onClick={() => setShowUploadDialog(true)}>
                 <FileUp className="h-5 w-5" />
                 <span className="sr-only">Upload Document</span>
               </Button>
@@ -70,7 +70,7 @@ export const Top_ToolBar = () => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button className="cursor-pointer" variant="ghost" size="icon">
                 <Download className="h-5 w-5" />
                 <span className="sr-only">Download</span>
               </Button>
@@ -84,7 +84,7 @@ export const Top_ToolBar = () => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button className="cursor-pointer" variant="ghost" size="icon">
                 <Undo2 className="h-5 w-5" />
                 <span className="sr-only">Undo</span>
               </Button>
@@ -96,7 +96,7 @@ export const Top_ToolBar = () => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button className="cursor-pointer" variant="ghost" size="icon">
                 <Redo2 className="h-5 w-5" />
                 <span className="sr-only">Redo</span>
               </Button>
@@ -111,7 +111,7 @@ export const Top_ToolBar = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7"
+            className="cursor-pointer h-7 w-7"
             onClick={handlePrevPage}
             disabled={currentPage <= 1}
           >
@@ -124,7 +124,7 @@ export const Top_ToolBar = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7"
+            className="cursor-pointer h-7 w-7"
             onClick={handleNextPage}
             disabled={currentPage >= totalPages}
           >
@@ -137,7 +137,7 @@ export const Top_ToolBar = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7"
+            className="cursor-pointer h-7 w-7"
             onClick={handleZoomOut}
             disabled={zoomLevel <= 50}
           >
@@ -148,7 +148,7 @@ export const Top_ToolBar = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7"
+            className="cursor-pointer h-7 w-7"
             onClick={handleZoomIn}
             disabled={zoomLevel >= 200}
           >
@@ -160,7 +160,7 @@ export const Top_ToolBar = () => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={toggleFullscreen}>
+              <Button className="cursor-pointer" variant="ghost" size="icon" onClick={toggleFullscreen}>
                 {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
                 <span className="sr-only">{isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}</span>
               </Button>
@@ -172,7 +172,7 @@ export const Top_ToolBar = () => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button className="cursor-pointer" variant="ghost" size="icon">
                 <Search className="h-5 w-5" />
                 <span className="sr-only">Search</span>
               </Button>

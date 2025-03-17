@@ -63,10 +63,10 @@ const Sidebar = () => {
                 variant={selectedTool === "highlight" ? "secondary" : "ghost"}
                 size="icon"
                 className={cn(
-                  "rounded-xl transition-all duration-200",
-                  selectedTool === "highlight" 
-                    ? "bg-secondary shadow-md" 
-                    : "hover:bg-secondary/80 hover:shadow-sm"
+                  "rounded-xl cursor-pointer transition-all duration-200",
+                  selectedTool === "highlight"
+                    ? "bg-zinc-200 "
+                    : "hover:bg-zinc-100 hover:shadow-sm"
                 )}
                 onClick={() => handleToolSelect("highlight")}
               >
@@ -85,10 +85,10 @@ const Sidebar = () => {
                 variant={selectedTool === "underline" ? "secondary" : "ghost"}
                 size="icon"
                 className={cn(
-                  "rounded-xl transition-all duration-200",
-                  selectedTool === "underline" 
-                    ? "bg-secondary shadow-md" 
-                    : "hover:bg-secondary/80 hover:shadow-sm"
+                  "rounded-xl cursor-pointer transition-all duration-200",
+                  selectedTool === "underline"
+                    ? "bg-zinc-200 "
+                    : "hover:bg-zinc-100 hover:shadow-sm"
                 )}
                 onClick={() => handleToolSelect("underline")}
               >
@@ -107,10 +107,10 @@ const Sidebar = () => {
                 variant={selectedTool === "comment" ? "secondary" : "ghost"}
                 size="icon"
                 className={cn(
-                  "rounded-xl transition-all duration-200",
-                  selectedTool === "comment" 
-                    ? "bg-secondary shadow-md" 
-                    : "hover:bg-secondary/80 hover:shadow-sm"
+                  "rounded-xl cursor-pointer transition-all duration-200",
+                  selectedTool === "comment"
+                    ? "bg-zinc-200 "
+                    : "hover:bg-zinc-100 hover:shadow-sm"
                 )}
                 onClick={() => handleToolSelect("comment")}
               >
@@ -129,10 +129,10 @@ const Sidebar = () => {
                 variant={selectedTool === "draw" ? "secondary" : "ghost"}
                 size="icon"
                 className={cn(
-                  "rounded-xl transition-all duration-200",
-                  selectedTool === "draw" 
-                    ? "bg-secondary shadow-md" 
-                    : "hover:bg-secondary/80 hover:shadow-sm"
+                  "rounded-xl cursor-pointer transition-all duration-200",
+                  selectedTool === "draw"
+                    ? "bg-zinc-200 "
+                    : "hover:bg-zinc-100 hover:shadow-sm"
                 )}
                 onClick={() => handleToolSelect("draw")}
               >
@@ -151,10 +151,10 @@ const Sidebar = () => {
                 variant={selectedTool === "signature" ? "secondary" : "ghost"}
                 size="icon"
                 className={cn(
-                  "rounded-xl transition-all duration-200",
-                  selectedTool === "signature" 
-                    ? "bg-secondary shadow-md" 
-                    : "hover:bg-secondary/80 hover:shadow-sm"
+                  "rounded-xl cursor-pointer transition-all duration-200",
+                  selectedTool === "signature"
+                    ? "bg-zinc-200 "
+                    : "hover:bg-zinc-100 hover:shadow-sm"
                 )}
                 onClick={() => handleToolSelect("signature")}
               >
