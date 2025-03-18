@@ -25,6 +25,7 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
     handleDrawEnd,
     handleHighlight,
     handleComment,
+    handleUnderline,
   } = useAnnotations(currentPage, zoomLevel);
 
   function onDocumentLoadSuccess({ numPages }) {
@@ -71,6 +72,8 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
   const handleClick = (e) => {
     if (selectedTool === "highlight") {
       handleHighlight(e, containerRef);
+    } else if (selectedTool === "underline") {
+      handleUnderline(e, containerRef);
     } else if (selectedTool === "comment") {
       handleComment(e, containerRef);
     }
@@ -147,9 +150,25 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
                   top: annotation.y,
                   width: annotation.width,
                   height: annotation.height,
-                  pointerEvents: "none", // Prevent interference with text selection
+                  pointerEvents: "none",
                 }}
-                title={annotation.text} // Show highlighted text on hover
+                title={annotation.text}
+              />
+            );
+          } else if (annotation.type === "underline") {
+            return (
+              <div
+                key={index}
+                className="absolute"
+                style={{
+                  left: annotation.x,
+                  top: annotation.y + annotation.height - 2, // Position at bottom of text
+                  width: annotation.width,
+                  height: '2px', // Underline thickness
+                  backgroundColor: '#000', // Underline color
+                  pointerEvents: "none",
+                }}
+                title={annotation.text}
               />
             );
           } else if (annotation.type === "comment") {

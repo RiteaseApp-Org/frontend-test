@@ -1,6 +1,7 @@
 import { useDrawAnnotation } from './annotations/useDrawAnnotation';
 import { useHighlightAnnotation } from './annotations/useHighlightAnnotation';
 import { useCommentAnnotation } from './annotations/useCommentAnnotation';
+import { useUnderlineAnnotation } from './annotations/useUnderlineAnnotation';
 
 export const useAnnotations = (currentPage, zoomLevel) => {
   const {
@@ -22,11 +23,17 @@ export const useAnnotations = (currentPage, zoomLevel) => {
     handleComment,
   } = useCommentAnnotation(currentPage, zoomLevel);
 
+  const {
+    underlineAnnotations,
+    handleUnderline,
+  } = useUnderlineAnnotation(currentPage, zoomLevel);
+
   // Combine all annotations
   const annotations = [
     ...drawAnnotations,
     ...highlightAnnotations,
     ...commentAnnotations,
+    ...underlineAnnotations,
   ];
 
   return {
@@ -38,5 +45,6 @@ export const useAnnotations = (currentPage, zoomLevel) => {
     handleDrawEnd,
     handleHighlight,
     handleComment,
+    handleUnderline,
   };
 }; 
