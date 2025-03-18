@@ -21,9 +21,8 @@ export const useDrawAnnotation = (currentPage, zoomLevel, file) => {
     return fileId ? (allAnnotations[fileId] || []) : [];
   });
   
-  const [drawColor, setDrawColor] = useState(() => {
-    return "#000000"; // Default black color
-  });
+  const [drawColor, setDrawColor] = useState("#000000"); // Default black color
+  const [strokeWidth, setStrokeWidth] = useState(2);
 
   // Save draw annotations to localStorage whenever they change
   useEffect(() => {
@@ -62,26 +61,28 @@ export const useDrawAnnotation = (currentPage, zoomLevel, file) => {
     
     setIsDrawing(false);
     if (currentPath.length > 1) {
-      setDrawAnnotations((prev) => [
-        ...prev,
-        {
-          type: "draw",
-          path: currentPath,
-          page: currentPage,
-          color: drawColor,
-          fileId, // Store fileId with the annotation
-        },
-      ]);
+      const newAnnotation = {
+        type: "draw",
+        path: currentPath,
+        page: currentPage,
+        color: drawColor, // Use the current draw color
+        strokeWidth,
+        fileId,
+      };
+      
+      setDrawAnnotations(prev => [...prev, newAnnotation]);
     }
     setCurrentPath([]);
   };
 
   return {
-    drawAnnotations: fileId ? drawAnnotations : [], // Only return annotations if file is loaded
+    drawAnnotations: fileId ? drawAnnotations : [],
     isDrawing,
     currentPath,
     drawColor,
     setDrawColor,
+    strokeWidth,
+    setStrokeWidth,
     handleDrawStart,
     handleDrawMove,
     handleDrawEnd,

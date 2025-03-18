@@ -15,7 +15,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
-export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumPages, selectedTool }) {
+export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumPages, selectedTool, drawColor, strokeWidth }) {
   const containerRef = useRef(null);
   const [error, setError] = useState(null);
 
@@ -296,8 +296,8 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
               >
                 <path 
                   d={pathData} 
-                  stroke={annotation.color} 
-                  strokeWidth="2" 
+                  stroke={annotation.color}
+                  strokeWidth={annotation.strokeWidth || strokeWidth}
                   fill="none" 
                 />
               </svg>
@@ -339,8 +339,8 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
                   ? `M ${point.x} ${point.y}`
                   : `${acc} L ${point.x} ${point.y}`;
               }, "")}
-              stroke="red"
-              strokeWidth="2"
+              stroke={drawColor}
+              strokeWidth={strokeWidth}
               fill="none"
             />
           </svg>

@@ -26,7 +26,8 @@ const Sidebar = ({ file, currentPage, numPages, setNumPages, setCurrentPage }) =
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [selectedTool, setSelectedTool] = useState(null);
-  const [drawColor, setDrawColor] = useState("#FF0000");
+  const [drawColor, setDrawColor] = useState("#000000");
+  const [strokeWidth, setStrokeWidth] = useState(2);
 
   const handleToolSelect = (tool) => {
     setSelectedTool(tool === selectedTool ? null : tool);
@@ -118,7 +119,7 @@ const Sidebar = ({ file, currentPage, numPages, setNumPages, setCurrentPage }) =
                 >
                   <Pen 
                     className="h-5 w-5" 
-                    style={{ color: drawColor }}
+                    style={{ color: selectedTool === "draw" ? drawColor : "currentColor" }}
                   />
                   <span className="sr-only">Draw</span>
                 </Button>
@@ -131,6 +132,8 @@ const Sidebar = ({ file, currentPage, numPages, setNumPages, setCurrentPage }) =
             <DrawColorPicker
               selectedColor={drawColor}
               onColorChange={setDrawColor}
+              strokeWidth={strokeWidth}
+              onWidthChange={setStrokeWidth}
             />
           )}
         </div>
@@ -169,6 +172,7 @@ const Sidebar = ({ file, currentPage, numPages, setNumPages, setCurrentPage }) =
           setNumPages={setNumPages}
           selectedTool={selectedTool}
           drawColor={drawColor}
+          strokeWidth={strokeWidth}
         />
       </div>
     </>
