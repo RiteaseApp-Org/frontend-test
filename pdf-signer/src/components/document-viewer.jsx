@@ -5,20 +5,27 @@ import { Document, Page } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { pdfjs } from 'react-pdf';
+import { useAnnotations } from "@/hooks/useAnnotations";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
   import.meta.url
 ).toString();
 
-
-export function DocumentViewer({ file, zoomLevel, currentPage, selectedTool }) {
+export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumPages, selectedTool }) {
   const containerRef = useRef(null);
-  const [annotations, setAnnotations] = useState([]);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [currentPath, setCurrentPath] = useState([]);
-  const [numPages, setNumPages] = useState(null);
   const [error, setError] = useState(null);
+
+  const {
+    annotations,
+    isDrawing,
+    currentPath,
+    handleDrawStart,
+    handleDrawMove,
+    handleDrawEnd,
+    handleHighlight,
+    handleComment,
+  } = useAnnotations(currentPage, zoomLevel);
 
   function onDocumentLoadSuccess({ numPages }) {
     console.log("PDF loaded successfully with", numPages, "pages");
@@ -44,71 +51,28 @@ export function DocumentViewer({ file, zoomLevel, currentPage, selectedTool }) {
   }, [fileUrl, file]);
 
   const handleMouseDown = (e) => {
-    if (selectedTool === "draw" && containerRef.current) {
-      setIsDrawing(true);
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / (zoomLevel / 100);
-      const y = (e.clientY - rect.top) / (zoomLevel / 100);
-      setCurrentPath([{ x, y }]);
+    if (selectedTool === "draw") {
+      handleDrawStart(e, containerRef);
     }
   };
 
   const handleMouseMove = (e) => {
-    if (isDrawing && selectedTool === "draw" && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / (zoomLevel / 100);
-      const y = (e.clientY - rect.top) / (zoomLevel / 100);
-      setCurrentPath((prev) => [...prev, { x, y }]);
+    if (selectedTool === "draw") {
+      handleDrawMove(e, containerRef);
     }
   };
 
   const handleMouseUp = () => {
-    if (isDrawing && selectedTool === "draw") {
-      setIsDrawing(false);
-      if (currentPath.length > 1) {
-        setAnnotations((prev) => [
-          ...prev,
-          {
-            type: "draw",
-            path: currentPath,
-            page: currentPage,
-          },
-        ]);
-      }
-      setCurrentPath([]);
+    if (selectedTool === "draw") {
+      handleDrawEnd();
     }
   };
 
   const handleClick = (e) => {
-    if (!containerRef.current) return;
-
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / (zoomLevel / 100);
-    const y = (e.clientY - rect.top) / (zoomLevel / 100);
-
     if (selectedTool === "highlight") {
-      setAnnotations((prev) => [
-        ...prev,
-        {
-          type: "highlight",
-          x,
-          y,
-          width: 100,
-          height: 20,
-          page: currentPage,
-        },
-      ]);
+      handleHighlight(e, containerRef);
     } else if (selectedTool === "comment") {
-      setAnnotations((prev) => [
-        ...prev,
-        {
-          type: "comment",
-          x,
-          y,
-          text: "Add a comment...",
-          page: currentPage,
-        },
-      ]);
+      handleComment(e, containerRef);
     }
   };
 
@@ -183,7 +147,9 @@ export function DocumentViewer({ file, zoomLevel, currentPage, selectedTool }) {
                   top: annotation.y,
                   width: annotation.width,
                   height: annotation.height,
+                  pointerEvents: "none", // Prevent interference with text selection
                 }}
+                title={annotation.text} // Show highlighted text on hover
               />
             );
           } else if (annotation.type === "comment") {

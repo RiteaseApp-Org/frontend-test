@@ -21,32 +21,11 @@ import { DocumentViewer } from "./document-viewer";
 // import { UploadDocumentDialog } from "./upload-document-dialog";
 import { cn } from "@/lib/utils";
 
-const Sidebar = ({ file }) => {
+const Sidebar = ({ file, currentPage, numPages, setNumPages, setCurrentPage }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(100);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(5);
   const [selectedTool, setSelectedTool] = useState(null);
 
-  const handleZoomIn = () => {
-    setZoomLevel((prev) => Math.min(prev + 10, 200));
-  };
-
-  const handleZoomOut = () => {
-    setZoomLevel((prev) => Math.max(prev - 10, 50));
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  };
-
-  const handlePrevPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const toggleFullscreen = () => {
-    setIsFullscreen((prev) => !prev);
-  };
 
   const handleToolSelect = (tool) => {
     setSelectedTool(tool === selectedTool ? null : tool);
@@ -172,6 +151,9 @@ const Sidebar = ({ file }) => {
           file={file}
           zoomLevel={zoomLevel}
           currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          numPages={numPages}
+          setNumPages={setNumPages}
           selectedTool={selectedTool}
         />
       </div>

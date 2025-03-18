@@ -20,12 +20,9 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-export const Top_ToolBar = ({setShowUploadDialog}) => {
+export const Top_ToolBar = ({ setShowUploadDialog, currentPage, setCurrentPage, numPages }) => {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(100)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(5)
-
   const [selectedTool, setSelectedTool] = useState(null)
 
   const handleZoomIn = () => {
@@ -37,11 +34,15 @@ export const Top_ToolBar = ({setShowUploadDialog}) => {
   }
 
   const handleNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+    if (numPages && currentPage < numPages) {
+      setCurrentPage((prev) => prev + 1)
+    }
   }
 
   const handlePrevPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1))
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1)
+    }
   }
 
   const toggleFullscreen = () => {
@@ -119,14 +120,14 @@ export const Top_ToolBar = ({setShowUploadDialog}) => {
             <span className="sr-only">Previous Page</span>
           </Button>
           <span className="text-sm">
-            {currentPage} / {totalPages}
+            {currentPage} / {numPages || 1}
           </span>
           <Button
             variant="ghost"
             size="icon"
             className="cursor-pointer h-7 w-7"
             onClick={handleNextPage}
-            disabled={currentPage >= totalPages}
+            disabled={!numPages || currentPage >= numPages}
           >
             <ChevronRight className="h-4 w-4" />
             <span className="sr-only">Next Page</span>
