@@ -20,12 +20,13 @@ import {
 import { DocumentViewer } from "./document-viewer";
 // import { UploadDocumentDialog } from "./upload-document-dialog";
 import { cn } from "@/lib/utils";
+import DrawColorPicker from "./ui/draw-color-picker";
 
 const Sidebar = ({ file, currentPage, numPages, setNumPages, setCurrentPage }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [selectedTool, setSelectedTool] = useState(null);
-
+  const [drawColor, setDrawColor] = useState("#FF0000");
 
   const handleToolSelect = (tool) => {
     setSelectedTool(tool === selectedTool ? null : tool);
@@ -100,27 +101,39 @@ const Sidebar = ({ file, currentPage, numPages, setNumPages, setCurrentPage }) =
           </Tooltip>
         </TooltipProvider>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant={selectedTool === "draw" ? "secondary" : "ghost"}
-                size="icon"
-                className={cn(
-                  "rounded-xl cursor-pointer transition-all duration-200",
-                  selectedTool === "draw"
-                    ? "bg-zinc-200 "
-                    : "hover:bg-zinc-100 hover:shadow-sm"
-                )}
-                onClick={() => handleToolSelect("draw")}
-              >
-                <Pen className="h-5 w-5" />
-                <span className="sr-only">Draw</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Draw</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <div className="relative">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={selectedTool === "draw" ? "secondary" : "ghost"}
+                  size="icon"
+                  className={cn(
+                    "rounded-xl cursor-pointer transition-all duration-200",
+                    selectedTool === "draw"
+                      ? "bg-zinc-200"
+                      : "hover:bg-zinc-100 hover:shadow-sm"
+                  )}
+                  onClick={() => handleToolSelect("draw")}
+                >
+                  <Pen 
+                    className="h-5 w-5" 
+                    style={{ color: drawColor }}
+                  />
+                  <span className="sr-only">Draw</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">Draw</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {selectedTool === "draw" && (
+            <DrawColorPicker
+              selectedColor={drawColor}
+              onColorChange={setDrawColor}
+            />
+          )}
+        </div>
 
         <TooltipProvider>
           <Tooltip>
@@ -155,6 +168,7 @@ const Sidebar = ({ file, currentPage, numPages, setNumPages, setCurrentPage }) =
           numPages={numPages}
           setNumPages={setNumPages}
           selectedTool={selectedTool}
+          drawColor={drawColor}
         />
       </div>
     </>

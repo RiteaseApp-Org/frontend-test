@@ -2,6 +2,7 @@ import { useDrawAnnotation } from './annotations/useDrawAnnotation';
 import { useHighlightAnnotation } from './annotations/useHighlightAnnotation';
 import { useCommentAnnotation } from './annotations/useCommentAnnotation';
 import { useUnderlineAnnotation } from './annotations/useUnderlineAnnotation';
+import { useSignatureAnnotation } from './annotations/useSignatureAnnotation';
 
 export const useAnnotations = (currentPage, zoomLevel, file) => {
   const {
@@ -11,7 +12,9 @@ export const useAnnotations = (currentPage, zoomLevel, file) => {
     handleDrawStart,
     handleDrawMove,
     handleDrawEnd,
-  } = useDrawAnnotation(currentPage, zoomLevel);
+    drawColor,
+    setDrawColor,
+  } = useDrawAnnotation(currentPage, zoomLevel, file);
 
   const {
     highlightAnnotations,
@@ -33,12 +36,23 @@ export const useAnnotations = (currentPage, zoomLevel, file) => {
     handleUnderline,
   } = useUnderlineAnnotation(currentPage, zoomLevel);
 
+  const {
+    signatureAnnotations,
+    isDrawingSignature,
+    currentSignature,
+    handleSignatureStart,
+    handleSignatureMove,
+    handleSignatureEnd,
+    deleteSignature,
+  } = useSignatureAnnotation(currentPage, zoomLevel, file);
+
   // Combine all annotations
   const annotations = [
     ...drawAnnotations,
     ...highlightAnnotations,
     ...commentAnnotations,
     ...underlineAnnotations,
+    ...signatureAnnotations,
   ];
 
   return {
@@ -56,5 +70,13 @@ export const useAnnotations = (currentPage, zoomLevel, file) => {
     saveComment,
     setActiveComment,
     deleteComment,
+    drawColor,
+    setDrawColor,
+    isDrawingSignature,
+    currentSignature,
+    handleSignatureStart,
+    handleSignatureMove,
+    handleSignatureEnd,
+    deleteSignature,
   };
 }; 

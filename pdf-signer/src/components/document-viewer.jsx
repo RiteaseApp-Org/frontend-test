@@ -34,6 +34,12 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
     saveComment,
     setActiveComment,
     deleteComment,
+    isDrawingSignature,
+    currentSignature,
+    handleSignatureStart,
+    handleSignatureMove,
+    handleSignatureEnd,
+    deleteSignature,
   } = useAnnotations(currentPage, zoomLevel, file);
 
   function onDocumentLoadSuccess({ numPages }) {
@@ -76,18 +82,24 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
   const handleMouseDown = (e) => {
     if (selectedTool === "draw") {
       handleDrawStart(e, containerRef);
+    } else if (selectedTool === "signature") {
+      handleSignatureStart(e, containerRef);
     }
   };
 
   const handleMouseMove = (e) => {
     if (selectedTool === "draw") {
       handleDrawMove(e, containerRef);
+    } else if (selectedTool === "signature") {
+      handleSignatureMove(e, containerRef);
     }
   };
 
   const handleMouseUp = () => {
     if (selectedTool === "draw") {
       handleDrawEnd();
+    } else if (selectedTool === "signature") {
+      handleSignatureEnd();
     }
   };
 
@@ -270,7 +282,6 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
               </div>
             );
           } else if (annotation.type === "draw") {
-            // Create SVG path from points
             const pathData = annotation.path.reduce((acc, point, i) => {
               return i === 0
                 ? `M ${point.x} ${point.y}`
@@ -283,7 +294,33 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
                 className="absolute inset-0 pointer-events-none"
                 style={{ width: "100%", height: "100%" }}
               >
-                <path d={pathData} stroke="red" strokeWidth="2" fill="none" />
+                <path 
+                  d={pathData} 
+                  stroke={annotation.color} 
+                  strokeWidth="2" 
+                  fill="none" 
+                />
+              </svg>
+            );
+          } else if (annotation.type === "signature") {
+            const pathData = annotation.path.reduce((acc, point, i) => {
+              return i === 0
+                ? `M ${point.x} ${point.y}`
+                : `${acc} L ${point.x} ${point.y}`;
+            }, "");
+
+            return (
+              <svg
+                key={index}
+                className="absolute inset-0 pointer-events-none"
+                style={{ width: "100%", height: "100%" }}
+              >
+                <path
+                  d={pathData}
+                  stroke="#000" // Signature color
+                  strokeWidth="2"
+                  fill="none"
+                />
               </svg>
             );
           }
@@ -303,6 +340,25 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
                   : `${acc} L ${point.x} ${point.y}`;
               }, "")}
               stroke="red"
+              strokeWidth="2"
+              fill="none"
+            />
+          </svg>
+        )}
+
+        {/* Current signature path */}
+        {isDrawingSignature && currentSignature.length > 1 && (
+          <svg
+            className="absolute inset-0 pointer-events-none"
+            style={{ width: "100%", height: "100%" }}
+          >
+            <path
+              d={currentSignature.reduce((acc, point, i) => {
+                return i === 0
+                  ? `M ${point.x} ${point.y}`
+                  : `${acc} L ${point.x} ${point.y}`;
+              }, "")}
+              stroke="#000"
               strokeWidth="2"
               fill="none"
             />
