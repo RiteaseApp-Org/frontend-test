@@ -43,7 +43,7 @@ const DocumentUploader = () => {
 
   const exportPDF = async () => {
     if (!file) return;
-    
+
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
     reader.onload = async () => {
@@ -98,7 +98,55 @@ const DocumentUploader = () => {
     };
   };
 
-  return <div>Document Uploader</div>;
+  return (
+    <div className="flex flex-col items-center p-5">
+      <div
+        {...getRootProps()}
+        className="border-dashed border-2 border-gray-400 p-10 rounded-lg cursor-pointer hover:border-gray-600"
+      >
+        <input {...getInputProps()} />
+        <p>Drag & drop a PDF here, or click to select a file</p>
+      </div>
+
+      {file && (
+        <div className="mt-5 w-full">
+          <Document file={file}>
+            <Page pageNumber={1} />
+          </Document>
+          <button
+            onClick={addHighlight}
+            className="mt-2 p-2 bg-yellow-500 text-white rounded"
+          >
+            Highlight
+          </button>
+          <button
+            onClick={addUnderline}
+            className="mt-2 p-2 bg-red-500 text-white rounded"
+          >
+            Underline
+          </button>
+          <button
+            onClick={addComment}
+            className="mt-2 p-2 bg-green-500 text-white rounded"
+          >
+            Add Comment
+          </button>
+          <button
+            onClick={addSignature}
+            className="mt-2 p-2 bg-purple-500 text-white rounded"
+          >
+            Sign
+          </button>
+          <button
+            onClick={exportPDF}
+            className="mt-2 p-2 bg-blue-500 text-white rounded"
+          >
+            Export PDF
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default DocumentUploader;
