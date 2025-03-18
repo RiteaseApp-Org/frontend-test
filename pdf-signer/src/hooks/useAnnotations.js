@@ -3,7 +3,7 @@ import { useHighlightAnnotation } from './annotations/useHighlightAnnotation';
 import { useCommentAnnotation } from './annotations/useCommentAnnotation';
 import { useUnderlineAnnotation } from './annotations/useUnderlineAnnotation';
 
-export const useAnnotations = (currentPage, zoomLevel) => {
+export const useAnnotations = (currentPage, zoomLevel, file) => {
   const {
     drawAnnotations,
     isDrawing,
@@ -21,7 +21,12 @@ export const useAnnotations = (currentPage, zoomLevel) => {
   const {
     commentAnnotations,
     handleComment,
-  } = useCommentAnnotation(currentPage, zoomLevel);
+    activeComment,
+    updateComment,
+    saveComment,
+    setActiveComment,
+    deleteComment,
+  } = useCommentAnnotation(currentPage, zoomLevel, file);
 
   const {
     underlineAnnotations,
@@ -46,5 +51,10 @@ export const useAnnotations = (currentPage, zoomLevel) => {
     handleHighlight,
     handleComment,
     handleUnderline,
+    activeComment,
+    updateComment,
+    saveComment,
+    setActiveComment,
+    deleteComment,
   };
 }; 

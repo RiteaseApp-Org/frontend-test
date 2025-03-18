@@ -6,6 +6,9 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { pdfjs } from 'react-pdf';
 import { useAnnotations } from "@/hooks/useAnnotations";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Trash2 } from "lucide-react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -26,7 +29,12 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
     handleHighlight,
     handleComment,
     handleUnderline,
-  } = useAnnotations(currentPage, zoomLevel);
+    activeComment,
+    updateComment,
+    saveComment,
+    setActiveComment,
+    deleteComment,
+  } = useAnnotations(currentPage, zoomLevel, file);
 
   function onDocumentLoadSuccess({ numPages }) {
     console.log("PDF loaded successfully with", numPages, "pages");
@@ -51,6 +59,20 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
     };
   }, [fileUrl, file]);
 
+  // Add useEffect for handling click outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (activeComment && !event.target.closest('.comment-container')) {
+        saveComment();
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [activeComment, saveComment]);
+
   const handleMouseDown = (e) => {
     if (selectedTool === "draw") {
       handleDrawStart(e, containerRef);
@@ -74,7 +96,7 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
       handleHighlight(e, containerRef);
     } else if (selectedTool === "underline") {
       handleUnderline(e, containerRef);
-    } else if (selectedTool === "comment") {
+    } else if (selectedTool === "comment" && !activeComment) {
       handleComment(e, containerRef);
     }
   };
@@ -172,18 +194,79 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
               />
             );
           } else if (annotation.type === "comment") {
+            const isActive = activeComment === annotation.id;
             return (
               <div
                 key={index}
-                className="absolute"
+                className={`absolute comment-container ${isActive ? 'z-50' : 'z-40'}`}
                 style={{
                   left: annotation.x,
                   top: annotation.y,
                 }}
               >
-                <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                  <span className="text-xs">i</span>
-                </div>
+                {isActive ? (
+                  <div className="bg-white shadow-lg rounded-lg p-4 w-[300px]">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="text-xs text-gray-500">
+                        {annotation.timestamp}
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-500 hover:text-red-700 -mt-2 -mr-2"
+                        onClick={() => deleteComment(annotation.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <Textarea
+                      placeholder="Add your comment..."
+                      value={annotation.comment}
+                      onChange={(e) => updateComment(annotation.id, e.target.value)}
+                      className="min-h-[100px] mb-2"
+                      autoFocus
+                    />
+                    {annotation.lastEdited && (
+                      <div className="text-xs text-gray-500 mb-2">
+                        Last edited: {annotation.lastEdited}
+                      </div>
+                    )}
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setActiveComment(null)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={saveComment}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div 
+                    className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer hover:bg-blue-600 relative group"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering the click outside handler
+                      setActiveComment(annotation.id);
+                    }}
+                  >
+                    <span className="text-xs">i</span>
+                    {/* Preview tooltip */}
+                    {annotation.comment && (
+                      <div className="absolute left-full ml-2 hidden group-hover:block bg-white text-gray-900 p-2 rounded shadow-lg w-[200px] text-sm">
+                        <div className="text-xs text-gray-500 mb-1">
+                          {annotation.timestamp}
+                        </div>
+                        {annotation.comment}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             );
           } else if (annotation.type === "draw") {
