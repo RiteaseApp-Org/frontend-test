@@ -1,3 +1,5 @@
+"use client";
+
 import React, {useState} from 'react';
 import { useDropzone } from 'react-dropzone';
 import {Document, Page, pdfjs} from "react-pdf";
@@ -9,6 +11,13 @@ const DocumentUploader = () => {
   const [file, setFile] = useState(null);
   const [annotations, setAnnotations] = useState([]);
   const [signatures, setSignatures] = useState([]);
+
+  const {getRootProps, getInputProps} = useDropzone({
+    accept: "application/pdf",
+    onDrop: (acceptedFiles) => {
+      setFile(acceptedFiles[0]);
+    }
+  })
 
   return (
     <div>Document Uploader</div>
