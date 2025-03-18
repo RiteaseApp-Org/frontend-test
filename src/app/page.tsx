@@ -41,6 +41,62 @@ const DocumentUploader = () => {
     }
   };
 
+  const exportPDF = async () => {
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onload = async () => {
+      const existingPdfBytes = reader.result;
+      const pdfDoc = await PDFDocument.load(existingPdfBytes);
+      const pages = pdfDoc.getPages();
+      const firstPage = pages[0];
+
+      annotations.forEach((annotation) => {
+        if (annotation.type === "highlight") {
+          firstPage.drawRectangle({
+            x: 50,
+            y: 500,
+            width: 200,
+            height: 50,
+            color: rgb(1, 1, 0),
+            opacity: 0.5,
+          });
+        } else if (annotation.type === "underline") {
+          firstPage.drawLine({
+            start: { x: 50, y: 480 },
+            end: { x: 250, y: 480 },
+            thickness: 2,
+            color: rgb(1, 0, 0),
+          });
+        } else if (annotation.type === "comment") {
+          firstPage.drawText(annotation.text, {
+            x: 50,
+            y: 460,
+            size: 12,
+            color: rgb(0, 0, 1),
+          });
+        }
+      });
+
+      signatures.forEach((signature, index) => {
+        firstPage.drawText(signature.text, {
+          x: 50,
+          y: 400 - index * 20,
+          size: 16,
+          color: rgb(0, 0, 0),
+        });
+      });
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "annotated.pdf";
+      link.click();
+    };
+  };
 
   return <div>Document Uploader</div>;
 };
