@@ -8,7 +8,14 @@ import TopToolBar from "./TopToolBar";
 const AnnotationTool = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [pdfFile, setPdfFile] = useState(null);
   
+  
+  const handleFileUpload = (file) => {
+    console.log('File being uploaded:', file);
+    setPdfFile(file);
+  };
+
   return (
     <>
       <div
@@ -19,12 +26,13 @@ const AnnotationTool = () => {
         <TopToolBar showUploadDialog={showUploadDialog} setShowUploadDialog={setShowUploadDialog} />
 
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
+          <Sidebar file={pdfFile} />
         </div>
 
         <UploadDocumentDialog
           open={showUploadDialog}
           onOpenChange={setShowUploadDialog}
+          onFileUpload={handleFileUpload}
         />
       </div>
     </>

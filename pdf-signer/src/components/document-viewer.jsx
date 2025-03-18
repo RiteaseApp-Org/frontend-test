@@ -1,12 +1,47 @@
 "use client";
 
-import { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { Document, Page } from "react-pdf";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
+import { pdfjs } from 'react-pdf';
 
-export function DocumentViewer({ zoomLevel, currentPage, selectedTool }) {
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.js',
+  import.meta.url
+).toString();
+
+
+export function DocumentViewer({ file, zoomLevel, currentPage, selectedTool }) {
   const containerRef = useRef(null);
   const [annotations, setAnnotations] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentPath, setCurrentPath] = useState([]);
+  const [numPages, setNumPages] = useState(null);
+  const [error, setError] = useState(null);
+
+  function onDocumentLoadSuccess({ numPages }) {
+    console.log("PDF loaded successfully with", numPages, "pages");
+    setNumPages(numPages);
+    setError(null);
+  }
+
+  function onDocumentLoadError(err) {
+    console.error("Error loading PDF:", err);
+    setError("Failed to load PDF file. Please make sure it's a valid PDF.");
+  }
+
+  // Create a URL for the file if it's a File object
+  const fileUrl = file instanceof File ? URL.createObjectURL(file) : file;
+
+  // Cleanup URL on component unmount
+  useEffect(() => {
+    return () => {
+      if (fileUrl && file instanceof File) {
+        URL.revokeObjectURL(fileUrl);
+      }
+    };
+  }, [fileUrl, file]);
 
   const handleMouseDown = (e) => {
     if (selectedTool === "draw" && containerRef.current) {
@@ -99,34 +134,41 @@ export function DocumentViewer({ zoomLevel, currentPage, selectedTool }) {
         onMouseLeave={handleMouseUp}
         onClick={handleClick}
       >
-        {/* Page content - placeholder */}
-        <div className="absolute inset-0 p-12 text-sm text-gray-600">
-          <h1 className="text-2xl font-bold mb-6">
-            Sample Document - Page {currentPage}
-          </h1>
-          <p className="mb-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in
-            dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula. Sed
-            auctor neque eu tellus rhoncus ut eleifend nibh porttitor.
-          </p>
-          <p className="mb-4">
-            Ut in nulla enim. Phasellus molestie magna non est bibendum non
-            venenatis nisl tempor. Suspendisse dictum feugiat nisl ut dapibus.
-            Mauris iaculis porttitor posuere. Praesent id metus massa, ut
-            blandit odio.
-          </p>
-          <p className="mb-4">
-            Proin quis tortor orci. Etiam at risus et justo dignissim congue.
-            Donec congue lacinia dui, a porttitor lectus condimentum laoreet.
-            Nunc eu ullamcorper orci. Quisque eget odio ac lectus vestibulum
-            faucibus eget in metus.
-          </p>
-          <p className="mb-4">
-            In pellentesque faucibus vestibulum. Nulla at nulla justo, eget
-            luctus tortor. Nulla facilisi. Duis aliquet egestas purus in
-            blandit. Curabitur vulputate, ligula lacinia scelerisque tempor,
-            lacus lacus ornare ante.
-          </p>
+        <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+          {file ? (
+            <Document
+              file={fileUrl}
+              onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
+              loading={
+                <div className="flex items-center justify-center">
+                  <p>Loading PDF...</p>
+                </div>
+              }
+              error={
+                error && (
+                  <div className="text-red-500 text-center">
+                    <p>{error}</p>
+                    <p className="text-sm mt-2">Please try uploading again</p>
+                  </div>
+                )
+              }
+            >
+              {numPages > 0 && (
+                <Page
+                  pageNumber={currentPage}
+                  width={8.5 * 96} // 8.5 inches * 96 DPI
+                  className="page"
+                  renderTextLayer={true}
+                  renderAnnotationLayer={true}
+                />
+              )}
+            </Document>
+          ) : (
+            <div>
+              <p>Upload a PDF to get started</p>
+            </div>
+          )}
         </div>
 
         {/* Render annotations */}
@@ -200,9 +242,11 @@ export function DocumentViewer({ zoomLevel, currentPage, selectedTool }) {
         )}
 
         {/* Page number indicator */}
-        <div className="absolute bottom-2 right-2 text-xs text-gray-500">
-          Page {currentPage}
-        </div>
+        {file && (
+          <div className="absolute bottom-2 right-2 text-xs text-gray-500">
+            Page {currentPage} of {numPages}
+          </div>
+        )}
       </div>
     </div>
   );

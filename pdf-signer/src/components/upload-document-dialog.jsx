@@ -15,13 +15,32 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export function UploadDocumentDialog({ open, onOpenChange }) {
+export function UploadDocumentDialog({ open, onOpenChange, onFileUpload }) {
   const [file, setFile] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [error, setError] = useState(null)
+
+  const validateFile = (file) => {
+    if (!file.type.includes('pdf')) {
+      setError('Please upload a PDF file')
+      return false
+    }
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      setError('File size should be less than 10MB')
+      return false
+    }
+    setError(null)
+    return true
+  }
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0])
+      const file = e.target.files[0]
+      if (validateFile(file)) {
+        setFile(file)
+      } else {
+        e.target.value = null
+      }
     }
   }
 
@@ -39,15 +58,22 @@ export function UploadDocumentDialog({ open, onOpenChange }) {
     setIsDragging(false)
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0])
+      const file = e.dataTransfer.files[0]
+      if (validateFile(file)) {
+        setFile(file)
+      }
     }
   }
 
   const handleUpload = () => {
-    // Handle file upload logic here
-    console.log("Uploading file:", file)
-    onOpenChange(false)
-    setFile(null)
+    if (file) {
+      // Create a copy of the file to ensure it's properly handled
+      const fileBlob = new Blob([file], { type: file.type });
+      onFileUpload(fileBlob);
+      onOpenChange(false);
+      setFile(null);
+      setError(null);
+    }
   }
 
   return (
@@ -88,8 +114,12 @@ export function UploadDocumentDialog({ open, onOpenChange }) {
                 <Upload className="h-4 w-4" />
                 <span>Choose File</span>
               </div>
-              <Input id="file-upload" type="file" accept=".pdf,.docx" className="sr-only" onChange={handleFileChange} />
+              <Input id="file-upload" type="file" accept=".pdf" className="sr-only" onChange={handleFileChange} />
             </Label>
+
+            {error && (
+              <p className="text-sm text-red-500 mt-2">{error}</p>
+            )}
           </div>
         </div>
 

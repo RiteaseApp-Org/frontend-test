@@ -21,7 +21,7 @@ import { DocumentViewer } from "./document-viewer";
 // import { UploadDocumentDialog } from "./upload-document-dialog";
 import { cn } from "@/lib/utils";
 
-const Sidebar = () => {
+const Sidebar = ({ file }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [currentPage, setCurrentPage] = useState(1);
@@ -169,6 +169,7 @@ const Sidebar = () => {
       {/* Document Viewer */}
       <div className="flex-1 overflow-auto bg-muted/30">
         <DocumentViewer
+          file={file}
           zoomLevel={zoomLevel}
           currentPage={currentPage}
           selectedTool={selectedTool}
