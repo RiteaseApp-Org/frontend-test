@@ -29,41 +29,39 @@ const AnnotationTool = () => {
   };
 
   return (
-    <>
-      <div
-        className={`flex bg-[#fbfbfc] flex-col h-screen ${
-          isFullscreen ? "fixed inset-0 z-50 bg-background" : ""
-        }`}
-      >
-        <TopToolBar 
-          numPages={numPages} 
-          currentPage={currentPage}
+    <div className={`flex bg-[#fbfbfc] flex-col h-screen ${
+      isFullscreen ? "fixed inset-0 z-50 bg-background" : ""
+    }`}>
+      <TopToolBar 
+        numPages={numPages} 
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage} 
+        showUploadDialog={showUploadDialog} 
+        setShowUploadDialog={setShowUploadDialog}
+        onUndo={undo}
+        onRedo={redo}
+        canUndo={canUndo}
+        canRedo={canRedo}
+        annotations={annotations}
+        pdfFile={pdfFile}
+      />
+
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar 
+          currentPage={currentPage} 
           setCurrentPage={setCurrentPage} 
-          showUploadDialog={showUploadDialog} 
-          setShowUploadDialog={setShowUploadDialog}
-          onUndo={undo}
-          onRedo={redo}
-          canUndo={canUndo}
-          canRedo={canRedo}
+          numPages={numPages} 
+          setNumPages={setNumPages} 
+          file={pdfFile} 
         />
+      </div> 
 
-        <div className="flex flex-1 overflow-hidden">
-          <Sidebar 
-            currentPage={currentPage} 
-            setCurrentPage={setCurrentPage} 
-            numPages={numPages} 
-            setNumPages={setNumPages} 
-            file={pdfFile} 
-          />
-        </div> 
-
-        <UploadDocumentDialog
-          open={showUploadDialog}
-          onOpenChange={setShowUploadDialog}
-          onFileUpload={handleFileUpload}
-        />
-      </div>
-    </>
+      <UploadDocumentDialog
+        open={showUploadDialog}
+        onOpenChange={setShowUploadDialog}
+        onFileUpload={handleFileUpload}
+      />
+    </div>
   );
 };
 

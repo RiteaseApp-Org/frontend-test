@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { modifyPDF } from "@/utils/pdfModifier"
 
 export const Top_ToolBar = ({ 
   setShowUploadDialog, 
@@ -28,7 +29,9 @@ export const Top_ToolBar = ({
   onUndo,
   onRedo,
   canUndo,
-  canRedo
+  canRedo,
+  annotations,
+  pdfFile,
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(100)
@@ -62,6 +65,28 @@ export const Top_ToolBar = ({
     setSelectedTool(tool === selectedTool ? null : tool)
   }
 
+  const handleDownload = async () => {
+    try {
+      if (!pdfFile) return;
+
+      // Modify the PDF with annotations
+      const modifiedPdfBytes = await modifyPDF(pdfFile, annotations);
+
+      // Create a blob and download
+      const blob = new Blob([modifiedPdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'annotated-document.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading modified PDF:', error);
+    }
+  };
+
   return (
     <div className="flex items-center justify-between border-b p-2 border-slate-200 dark:border-slate-800 bg-background">
       <div className="flex items-center gap-2">
@@ -80,7 +105,13 @@ export const Top_ToolBar = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button className="cursor-pointer" variant="ghost" size="icon">
+              <Button 
+                onClick={handleDownload} 
+                disabled={!pdfFile}
+                className="cursor-pointer" 
+                variant="ghost" 
+                size="icon"
+              >
                 <Download className="h-5 w-5" />
                 <span className="sr-only">Download</span>
               </Button>
