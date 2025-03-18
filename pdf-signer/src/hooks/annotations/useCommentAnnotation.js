@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getFromStorage, saveToStorage } from '@/utils/storage';
 
 export const useCommentAnnotation = (currentPage, zoomLevel, file) => {
   // Generate a unique identifier for the file
@@ -15,10 +16,7 @@ export const useCommentAnnotation = (currentPage, zoomLevel, file) => {
   const fileId = getFileId();
 
   const [commentAnnotations, setCommentAnnotations] = useState(() => {
-    // Load comments from localStorage on initial render
-    const savedComments = localStorage.getItem('pdfComments');
-    const allComments = savedComments ? JSON.parse(savedComments) : {};
-    // Only return comments for current file
+    const allComments = getFromStorage('pdfComments', {});
     return fileId ? (allComments[fileId] || []) : [];
   });
   const [activeComment, setActiveComment] = useState(null);
@@ -26,13 +24,9 @@ export const useCommentAnnotation = (currentPage, zoomLevel, file) => {
   // Save to localStorage whenever comments change
   useEffect(() => {
     if (fileId) {
-      const savedComments = localStorage.getItem('pdfComments');
-      const allComments = savedComments ? JSON.parse(savedComments) : {};
-      
-      // Update comments for current file
+      const allComments = getFromStorage('pdfComments', {});
       allComments[fileId] = commentAnnotations;
-      
-      localStorage.setItem('pdfComments', JSON.stringify(allComments));
+      saveToStorage('pdfComments', allComments);
     }
   }, [commentAnnotations, fileId]);
 
@@ -82,7 +76,8 @@ export const useCommentAnnotation = (currentPage, zoomLevel, file) => {
   };
 
   return {
-    commentAnnotations: fileId ? commentAnnotations : [], // Only return comments if file is loaded
+    commentAnnotations: fileId ? commentAnnotations : [],
+    setCommentAnnotations,
     activeComment,
     handleComment,
     updateComment,

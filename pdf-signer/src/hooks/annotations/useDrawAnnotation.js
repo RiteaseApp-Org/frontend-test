@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getFromStorage, saveToStorage } from '@/utils/storage';
 
 export const useDrawAnnotation = (currentPage, zoomLevel, file) => {
   const [isDrawing, setIsDrawing] = useState(false);
@@ -16,8 +17,7 @@ export const useDrawAnnotation = (currentPage, zoomLevel, file) => {
   const fileId = getFileId();
 
   const [drawAnnotations, setDrawAnnotations] = useState(() => {
-    const savedAnnotations = localStorage.getItem('pdfDrawAnnotations');
-    const allAnnotations = savedAnnotations ? JSON.parse(savedAnnotations) : {};
+    const allAnnotations = getFromStorage('pdfDrawAnnotations', {});
     return fileId ? (allAnnotations[fileId] || []) : [];
   });
   
@@ -27,13 +27,9 @@ export const useDrawAnnotation = (currentPage, zoomLevel, file) => {
   // Save draw annotations to localStorage whenever they change
   useEffect(() => {
     if (fileId) {
-      const savedAnnotations = localStorage.getItem('pdfDrawAnnotations');
-      const allAnnotations = savedAnnotations ? JSON.parse(savedAnnotations) : {};
-      
-      // Update annotations for current file
+      const allAnnotations = getFromStorage('pdfDrawAnnotations', {});
       allAnnotations[fileId] = drawAnnotations;
-      
-      localStorage.setItem('pdfDrawAnnotations', JSON.stringify(allAnnotations));
+      saveToStorage('pdfDrawAnnotations', allAnnotations);
     }
   }, [drawAnnotations, fileId]);
 
@@ -77,6 +73,7 @@ export const useDrawAnnotation = (currentPage, zoomLevel, file) => {
 
   return {
     drawAnnotations: fileId ? drawAnnotations : [],
+    setDrawAnnotations,
     isDrawing,
     currentPath,
     drawColor,

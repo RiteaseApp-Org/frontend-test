@@ -106,7 +106,7 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
   const handleClick = (e) => {
     if (selectedTool === "highlight") {
       handleHighlight(e, containerRef);
-    } else if (selectedTool === "underline") {
+    } else if (selectedTool === "underline" && handleUnderline) {
       handleUnderline(e, containerRef);
     } else if (selectedTool === "comment" && !activeComment) {
       handleComment(e, containerRef);
@@ -192,14 +192,13 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
           } else if (annotation.type === "underline") {
             return (
               <div
-                key={index}
-                className="absolute"
+                key={annotation.id || index}
+                className="absolute bg-black"
                 style={{
                   left: annotation.x,
-                  top: annotation.y + annotation.height - 2, // Position at bottom of text
+                  top: annotation.y + annotation.height - 1, // Position at bottom of text
                   width: annotation.width,
-                  height: '2px', // Underline thickness
-                  backgroundColor: '#000', // Underline color
+                  height: '1px', // Thin line
                   pointerEvents: "none",
                 }}
                 title={annotation.text}

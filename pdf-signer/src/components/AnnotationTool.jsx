@@ -4,6 +4,7 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import { UploadDocumentDialog } from "./upload-document-dialog";
 import TopToolBar from "./TopToolBar";
+import { useAnnotations } from "@/hooks/useAnnotations";
 
 const AnnotationTool = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -11,7 +12,17 @@ const AnnotationTool = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [numPages, setNumPages] = useState(0);
-  
+  const [zoomLevel, setZoomLevel] = useState(100);
+
+  const {
+    annotations,
+    // ... other annotation props
+    undo,
+    redo,
+    canUndo,
+    canRedo
+  } = useAnnotations(currentPage, zoomLevel, pdfFile);
+
   const handleFileUpload = (file) => {
     console.log('File being uploaded:', file);
     setPdfFile(file);
@@ -29,7 +40,11 @@ const AnnotationTool = () => {
           currentPage={currentPage}
           setCurrentPage={setCurrentPage} 
           showUploadDialog={showUploadDialog} 
-          setShowUploadDialog={setShowUploadDialog} 
+          setShowUploadDialog={setShowUploadDialog}
+          onUndo={undo}
+          onRedo={redo}
+          canUndo={canUndo}
+          canRedo={canRedo}
         />
 
         <div className="flex flex-1 overflow-hidden">

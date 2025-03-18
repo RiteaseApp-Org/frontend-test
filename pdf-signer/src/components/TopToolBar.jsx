@@ -20,7 +20,16 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-export const Top_ToolBar = ({ setShowUploadDialog, currentPage, setCurrentPage, numPages }) => {
+export const Top_ToolBar = ({ 
+  setShowUploadDialog, 
+  currentPage, 
+  setCurrentPage, 
+  numPages,
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo
+}) => {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(100)
   const [selectedTool, setSelectedTool] = useState(null)
@@ -85,7 +94,13 @@ export const Top_ToolBar = ({ setShowUploadDialog, currentPage, setCurrentPage, 
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button className="cursor-pointer" variant="ghost" size="icon">
+              <Button 
+                className="cursor-pointer" 
+                variant="ghost" 
+                size="icon"
+                onClick={onUndo}
+                disabled={!canUndo}
+              >
                 <Undo2 className="h-5 w-5" />
                 <span className="sr-only">Undo</span>
               </Button>
@@ -97,7 +112,13 @@ export const Top_ToolBar = ({ setShowUploadDialog, currentPage, setCurrentPage, 
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button className="cursor-pointer" variant="ghost" size="icon">
+              <Button 
+                className="cursor-pointer" 
+                variant="ghost" 
+                size="icon"
+                onClick={onRedo}
+                disabled={!canRedo}
+              >
                 <Redo2 className="h-5 w-5" />
                 <span className="sr-only">Redo</span>
               </Button>

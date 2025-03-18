@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getFromStorage, saveToStorage } from '@/utils/storage';
 
 export const useSignatureAnnotation = (currentPage, zoomLevel, file) => {
   // Generate a unique identifier for the file
@@ -13,8 +14,7 @@ export const useSignatureAnnotation = (currentPage, zoomLevel, file) => {
   const fileId = getFileId();
 
   const [signatureAnnotations, setSignatureAnnotations] = useState(() => {
-    const savedAnnotations = localStorage.getItem('pdfSignatures');
-    const allAnnotations = savedAnnotations ? JSON.parse(savedAnnotations) : {};
+    const allAnnotations = getFromStorage('pdfSignatures', {});
     return fileId ? (allAnnotations[fileId] || []) : [];
   });
 
@@ -24,12 +24,9 @@ export const useSignatureAnnotation = (currentPage, zoomLevel, file) => {
   // Save signatures to localStorage whenever they change
   useEffect(() => {
     if (fileId) {
-      const savedAnnotations = localStorage.getItem('pdfSignatures');
-      const allAnnotations = savedAnnotations ? JSON.parse(savedAnnotations) : {};
-      
+      const allAnnotations = getFromStorage('pdfSignatures', {});
       allAnnotations[fileId] = signatureAnnotations;
-      
-      localStorage.setItem('pdfSignatures', JSON.stringify(allAnnotations));
+      saveToStorage('pdfSignatures', allAnnotations);
     }
   }, [signatureAnnotations, fileId]);
 
@@ -77,6 +74,7 @@ export const useSignatureAnnotation = (currentPage, zoomLevel, file) => {
 
   return {
     signatureAnnotations: fileId ? signatureAnnotations : [],
+    setSignatureAnnotations,
     isDrawingSignature,
     currentSignature,
     handleSignatureStart,

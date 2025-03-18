@@ -1,53 +1,48 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 export const useUnderlineAnnotation = (currentPage, zoomLevel) => {
   const [underlineAnnotations, setUnderlineAnnotations] = useState([]);
 
-  const handleUnderline = (e, containerRef) => {
+  const handleUnderline = useCallback((e, containerRef) => {
     if (!containerRef.current) return;
 
     // Get the selected text
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed) {
-      // If no text is selected or selection is collapsed, return
       return;
     }
 
     // Get the selected range
     const range = selection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
+    const rects = range.getClientRects();
     const containerRect = containerRef.current.getBoundingClientRect();
-
-    // Calculate coordinates relative to the container
-    const x = (rect.left - containerRect.left) / (zoomLevel / 100);
-    const y = (rect.top - containerRect.top) / (zoomLevel / 100);
-    const width = rect.width / (zoomLevel / 100);
-    const height = rect.height / (zoomLevel / 100);
 
     // Get the selected text content
     const text = selection.toString();
 
     if (text.trim()) {
-      setUnderlineAnnotations((prev) => [
-        ...prev,
-        {
-          type: "underline",
-          x,
-          y,
-          width,
-          height,
-          text,
-          page: currentPage,
-        },
-      ]);
+      // Create an underline for each line of text
+      const underlines = Array.from(rects).map((rect, index) => ({
+        type: "underline",
+        x: (rect.left - containerRect.left) / (zoomLevel / 100),
+        y: (rect.top - containerRect.top) / (zoomLevel / 100),
+        width: rect.width / (zoomLevel / 100),
+        height: rect.height,
+        text: text,
+        page: currentPage,
+        id: `${Date.now()}-${index}` // Unique ID for each underline
+      }));
+
+      setUnderlineAnnotations(prev => [...prev, ...underlines]);
 
       // Clear the selection after underlining
       selection.removeAllRanges();
     }
-  };
+  }, [currentPage, zoomLevel]);
 
   return {
     underlineAnnotations,
+    setUnderlineAnnotations,
     handleUnderline,
   };
 }; 

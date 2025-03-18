@@ -48,6 +48,7 @@ export const useHighlightAnnotation = (currentPage, zoomLevel) => {
 
   return {
     highlightAnnotations,
+    setHighlightAnnotations,
     handleHighlight,
   };
 }; 
