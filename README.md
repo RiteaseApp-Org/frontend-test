@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RiteEase - PDF Annotation Tool
+
+A powerful Next.js application for annotating PDF documents with various tools including highlighting, underlining, commenting, and signature capabilities.
+
+## Features
+
+- **Document Upload**: Drag and drop or select PDF files to annotate
+- **Annotation Tools**:
+  - Highlight text with customizable colors
+  - Underline text with customizable colors
+  - Add comments to specific parts of the document
+  - Create and place signatures on the document
+- **Document Export**: Export the annotated document with all annotations embedded
+- **Responsive Design**: Works well on different screen sizes
+- **Intuitive UI**: Clean, modern interface with smooth interactions
+
+## Tech Stack
+
+- Next.js
+- TypeScript
+- Tailwind CSS
+- PDF.js (for rendering PDFs)
+- PDF-lib (for PDF manipulation)
+- React-signature-canvas (for signature functionality)
+- React-dropzone (for file upload)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js (v16.8 or later)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/ritease.git
+cd ritease
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn
+```
+
+3. Run the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Upload a PDF**:
+   - Drag and drop a PDF file into the drop zone or click to browse files
+   - Only PDF files are accepted
 
-## Learn More
+2. **Use Annotation Tools**:
+   - Select a tool from the toolbar (highlight, underline, comment, signature)
+   - For highlights and underlines, select a color and then click and drag over the desired area
+   - For comments, click anywhere on the document to add a comment
+   - For signatures, draw your signature in the signature pad
 
-To learn more about Next.js, take a look at the following resources:
+3. **Navigate the Document**:
+   - Use the navigation controls to move between pages
+   - Adjust zoom level using the zoom controls
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Export the Annotated PDF**:
+   - Click the export button to download your annotated PDF
+   - All annotations will be embedded in the exported document
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Contributions are welcome! Feel free to open issues or submit pull requests.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the LICENSE file for details. 
