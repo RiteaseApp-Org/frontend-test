@@ -81,7 +81,7 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
 
   const handleMouseDown = (e) => {
     if (selectedTool === "draw") {
-      handleDrawStart(e, containerRef);
+      handleDrawStart(e, containerRef, drawColor, strokeWidth);
     } else if (selectedTool === "signature") {
       handleSignatureStart(e, containerRef);
     }
@@ -97,7 +97,7 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
 
   const handleMouseUp = () => {
     if (selectedTool === "draw") {
-      handleDrawEnd();
+      handleDrawEnd(drawColor, strokeWidth);
     } else if (selectedTool === "signature") {
       handleSignatureEnd();
     }
@@ -297,14 +297,14 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
 
               return (
                 <svg
-                  key={index}
+                  key={annotation.id || index}
                   className="absolute inset-0 pointer-events-none"
                   style={{ width: "100%", height: "100%" }}
                 >
                   <path 
                     d={pathData} 
                     stroke={annotation.color}
-                    strokeWidth={annotation.strokeWidth || strokeWidth}
+                    strokeWidth={annotation.strokeWidth}
                     fill="none" 
                   />
                 </svg>

@@ -33,7 +33,7 @@ export const useDrawAnnotation = (currentPage, zoomLevel, file) => {
     }
   }, [drawAnnotations, fileId]);
 
-  const handleDrawStart = (e, containerRef) => {
+  const handleDrawStart = (e, containerRef, color, strokeWidth) => {
     if (!containerRef.current || !fileId) return;
     
     setIsDrawing(true);
@@ -52,7 +52,7 @@ export const useDrawAnnotation = (currentPage, zoomLevel, file) => {
     setCurrentPath((prev) => [...prev, { x, y }]);
   };
 
-  const handleDrawEnd = () => {
+  const handleDrawEnd = (color, strokeWidth) => {
     if (!isDrawing) return;
     
     setIsDrawing(false);
@@ -61,9 +61,10 @@ export const useDrawAnnotation = (currentPage, zoomLevel, file) => {
         type: "draw",
         path: currentPath,
         page: currentPage,
-        color: drawColor, // Use the current draw color
-        strokeWidth,
+        color: color,
+        strokeWidth: strokeWidth,
         fileId,
+        id: Date.now(),
       };
       
       setDrawAnnotations(prev => [...prev, newAnnotation]);
