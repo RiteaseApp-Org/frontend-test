@@ -48,7 +48,7 @@ const DocumentUploader = () => {
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
     reader.onload = async () => {
-      const existingPdfBytes = reader.result;
+      const existingPdfBytes = reader.result as ArrayBuffer;
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
       const pages = pdfDoc.getPages();
       const firstPage = pages[0];
