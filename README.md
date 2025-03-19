@@ -1,73 +1,81 @@
-## Frontend Technical Assessment - Document Signer & Annotation Tool
+# Document Signer & Annotation Tool
 
-## Overview
+This project is a web-based document signer and annotation tool built using Next.js. It allows users to upload PDFs, annotate them with highlights, underlines, comments, and signatures, and export the annotated document while maintaining quality.
 
-This technical assessment is designed to evaluate your skills in building interactive, modern web applications using Next.js. You'll be creating a single-page document signer and annotation tool that allows users to work with PDF documents.
+## Setup and Running Instructions
 
-## Requirements
+### Prerequisites
 
-### Core Functionality
+- Node.js 16.x or later
+- npm or yarn
 
-1. **Document Upload**
-   - Users should be able to upload PDF documents
-   - Implement drag-and-drop functionality and/or file selection dialog
-   - Display uploaded document in the viewport
+### Installation
 
-2. **Annotation Features**
-   - Implement the following annotation capabilities:
-     - Highlight text with customizable colors
-     - Underline text with customizable colors
-     - Add comments attached to specific parts of the document
-     - Draw signatures anywhere on the document
+1. Clone the repository:
 
-3. **Document Export**
-   - Allow users to export the annotated document as a PDF
-   - All annotations and signatures must be properly embedded in the exported PDF
-   - Exported document should maintain the quality of the original
+   ```bash
+   git clone https://github.com/siccoo/frontend-test
+   cd frontend-test
+   ```
 
-### Technical Requirements
+2. Install dependencies:
 
-- Use **Next.js** as your framework
-- Implement a single-page application (SPA) design where all actions occur without page reloads
-- Create a responsive design that works well on different screen sizes
-- Ensure the application has a clean, intuitive, and professional UI/UX
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-### UI/UX Requirements
+3. Start the development server:
 
-- Design a sleek, modern interface with clear visual hierarchy
-- Implement intuitive controls for all annotation tools
-- Create smooth transitions between different states of the application
-- Provide appropriate feedback for user actions (loading states, success/error messages)
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-## Evaluation Criteria
+4. Open your browser and navigate to `http://localhost:3000`
 
-Your submission will be evaluated based on:
+## Libraries and Tools Used
 
-1. **Functionality** - Does the application meet all the requirements?
-2. **Code Quality** - Is your code well-structured, readable, and maintainable?
-3. **UI/UX Design** - Is the interface intuitive, responsive, and visually appealing?
-4. **Performance** - Does the application handle operations efficiently?
-5. **Best Practices** - Do you follow modern web development best practices?
+- **Next.js**: Chosen for its fast performance, SSR capabilities, and seamless development experience.
+- **React-PDF**: Used to render and display PDF documents in the viewport.
+- **pdf-lib**: Allows for adding annotations and signatures programmatically to the PDF.
+- **react-dropzone**: Provides an intuitive drag-and-drop file upload experience.
+- **Tailwind CSS**: Used for styling to ensure a modern and responsive UI.
 
-## Submission Guidelines
+## Challenges Faced & Solutions
 
-1. Fork this repository
-2. Implement your solution
-3. Create a README with:
-   - Setup and running instructions
-   - Any libraries or tools you used and why
-   - Any challenges you faced and how you solved them
-   - Any features you would add if you had more time
-4. Submit a pull request or send us a link to your repository
+1. **Rendering Large PDFs Efficiently**
+`Issue`: Some large PDF files caused performance lags.
+`Solution`: Used React-PDF’s paginated rendering and lazy loading techniques to optimize performance.
 
-## Time Allocation
+2. **Handling Text Selection for Annotations**
+`Issue`: Needed to allow users to highlight or underline selected text dynamically.
+`Solution`: Implemented a listener that detects selected text and applies styles dynamically.
 
-You have three days to complete this assessment. We estimate it should take approximately 8-10 hours of focused work.
+3. **Embedding Annotations on Export**
+`Issue`: Ensuring that exported PDFs retain user annotations.
+`Solution`: Used pdf-lib to programmatically embed highlights, underlines, and signatures onto the document before saving.
 
-## Questions
+4. **Multi-Page Support for Annotations**
+`Issue`: Initially, annotations were restricted to a single page.
+`Solution`: Modified state management to track annotations on multiple pages and update the rendered PDF dynamically.
 
-If you have any questions or need clarification, please reach out to [dev.ritease@gmail.com](mailto:dev.ritease@gmail.com).
+## Future Enhancements
 
-Good luck!
+1. **Improved Multi-Page Annotation**
+Enhancing the UI/UX to make navigation between pages seamless when annotating multiple pages.
 
+2. **Real-Time Collaboration**
+Allow multiple users to annotate a document simultaneously in real time.
 
+3. **OCR for Scanned PDFs**
+Implement OCR (Optical Character Recognition) to enable text selection and annotation on scanned PDFs.
+
+4. **Export Options**
+Support exporting in different formats such as PNG, DOCX, and JSON for structured annotation storage.
+
+## Conclusion
+
+This document signer and annotation tool provides a seamless experience for users who need to work with PDFs interactively. It combines a modern UI with robust annotation capabilities while ensuring high-quality PDF exports. Future improvements will further enhance its usability and feature set!
