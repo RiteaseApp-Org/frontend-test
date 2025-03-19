@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -8,12 +9,12 @@ import { PDFDocument, rgb } from "pdf-lib";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const DocumentUploader = () => {
-  const [file, setFile] = useState(null);
-  const [annotations, setAnnotations] = useState([]);
-  const [signatures, setSignatures] = useState([]);
+  const [file, setFile] = useState<File | null>(null);
+  const [annotations, setAnnotations] = useState<any[]>([]);
+  const [signatures, setSignatures] = useState<any[]>([]);
 
   const { getRootProps, getInputProps } = useDropzone({
-    accept: "application/pdf",
+    accept: { "application/pdf": [".pdf"] },
     onDrop: (acceptedFiles) => {
       setFile(acceptedFiles[0]);
     },
@@ -121,25 +122,25 @@ const DocumentUploader = () => {
           </button>
           <button
             onClick={addUnderline}
-            className="mt-2 p-2 bg-red-500 text-white rounded"
+            className="mt-2 ml-2 p-2 bg-red-500 text-white rounded"
           >
             Underline
           </button>
           <button
             onClick={addComment}
-            className="mt-2 p-2 bg-green-500 text-white rounded"
+            className="mt-2 ml-2 p-2 bg-green-500 text-white rounded"
           >
             Add Comment
           </button>
           <button
             onClick={addSignature}
-            className="mt-2 p-2 bg-purple-500 text-white rounded"
+            className="mt-2 ml-2 p-2 bg-purple-500 text-white rounded"
           >
             Sign
           </button>
           <button
             onClick={exportPDF}
-            className="mt-2 p-2 bg-blue-500 text-white rounded"
+            className="mt-2 ml-2 p-2 bg-blue-500 text-white rounded"
           >
             Export PDF
           </button>
