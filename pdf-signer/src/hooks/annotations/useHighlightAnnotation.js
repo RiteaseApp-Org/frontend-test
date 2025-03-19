@@ -3,7 +3,7 @@ import { useState } from 'react';
 export const useHighlightAnnotation = (currentPage, zoomLevel) => {
   const [highlightAnnotations, setHighlightAnnotations] = useState([]);
 
-  const handleHighlight = (e, containerRef) => {
+  const handleHighlight = (e, containerRef, color) => {
     if (!containerRef.current) return;
 
     // Get the selected text
@@ -37,6 +37,7 @@ export const useHighlightAnnotation = (currentPage, zoomLevel) => {
           width,
           height,
           text,
+          color,
           page: currentPage,
         },
       ]);

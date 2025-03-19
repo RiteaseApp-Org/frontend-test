@@ -15,7 +15,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
-export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumPages, selectedTool, drawColor, strokeWidth }) {
+export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumPages, selectedTool, drawColor, strokeWidth, highlightColor, underlineColor }) {
   const containerRef = useRef(null);
   const [error, setError] = useState(null);
 
@@ -183,12 +183,14 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
               return (
                 <div
                   key={index}
-                  className="absolute bg-yellow-200 opacity-50"
+                  className="absolute"
                   style={{
                     left: annotation.x,
                     top: annotation.y,
                     width: annotation.width,
                     height: annotation.height,
+                    backgroundColor: annotation.color || highlightColor,
+                    opacity: 0.3,
                     pointerEvents: "none",
                   }}
                   title={annotation.text}
@@ -198,12 +200,13 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
               return (
                 <div
                   key={annotation.id || index}
-                  className="absolute bg-black"
+                  className="absolute"
                   style={{
                     left: annotation.x,
-                    top: annotation.y + annotation.height - 1, // Position at bottom of text
+                    top: annotation.y + annotation.height - 1,
                     width: annotation.width,
-                    height: '1px', // Thin line
+                    height: '1px',
+                    backgroundColor: annotation.color || underlineColor,
                     pointerEvents: "none",
                   }}
                   title={annotation.text}
