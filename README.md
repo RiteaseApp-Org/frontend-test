@@ -62,6 +62,10 @@ This project is a web-based document signer and annotation tool built using Next
 `Issue`: Initially, annotations were restricted to a single page.
 `Solution`: Modified state management to track annotations on multiple pages and update the rendered PDF dynamically.
 
+5. **File Type Validation**
+`Issue`: Initially, non-PDF files were accepted.
+`Solution`: Restricted file types using accept: `{ "application/pdf": [".pdf"] }` in useDropzone.
+
 ## Future Enhancements
 
 1. **Improved Multi-Page Annotation**
