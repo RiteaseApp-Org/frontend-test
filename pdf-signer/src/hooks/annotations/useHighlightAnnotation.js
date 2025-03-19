@@ -39,6 +39,7 @@ export const useHighlightAnnotation = (currentPage, zoomLevel) => {
           text,
           color,
           page: currentPage,
+          id: Date.now(),
         },
       ]);
 

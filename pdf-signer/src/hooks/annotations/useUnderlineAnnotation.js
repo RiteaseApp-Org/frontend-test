@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react';
 export const useUnderlineAnnotation = (currentPage, zoomLevel) => {
   const [underlineAnnotations, setUnderlineAnnotations] = useState([]);
 
-  const handleUnderline = useCallback((e, containerRef) => {
+  const handleUnderline = useCallback((e, containerRef, color) => {
     if (!containerRef.current) return;
 
     // Get the selected text
@@ -29,6 +29,7 @@ export const useUnderlineAnnotation = (currentPage, zoomLevel) => {
         width: rect.width / (zoomLevel / 100),
         height: rect.height,
         text: text,
+        color, // Store the color with each annotation
         page: currentPage,
         id: `${Date.now()}-${index}` // Unique ID for each underline
       }));

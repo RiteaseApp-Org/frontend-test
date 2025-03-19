@@ -105,9 +105,9 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
 
   const handleClick = (e) => {
     if (selectedTool === "highlight") {
-      handleHighlight(e, containerRef);
-    } else if (selectedTool === "underline" && handleUnderline) {
-      handleUnderline(e, containerRef);
+      handleHighlight(e, containerRef, highlightColor);
+    } else if (selectedTool === "underline") {
+      handleUnderline(e, containerRef, underlineColor);
     } else if (selectedTool === "comment" && !activeComment) {
       handleComment(e, containerRef);
     }
@@ -182,14 +182,14 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
             if (annotation.type === "highlight") {
               return (
                 <div
-                  key={index}
+                  key={annotation.id || index}
                   className="absolute"
                   style={{
                     left: annotation.x,
                     top: annotation.y,
                     width: annotation.width,
                     height: annotation.height,
-                    backgroundColor: annotation.color || highlightColor,
+                    backgroundColor: annotation.color,
                     opacity: 0.3,
                     pointerEvents: "none",
                   }}
@@ -206,7 +206,7 @@ export function DocumentViewer({ file, zoomLevel, currentPage, numPages, setNumP
                     top: annotation.y + annotation.height - 1,
                     width: annotation.width,
                     height: '1px',
-                    backgroundColor: annotation.color || underlineColor,
+                    backgroundColor: annotation.color,
                     pointerEvents: "none",
                   }}
                   title={annotation.text}
