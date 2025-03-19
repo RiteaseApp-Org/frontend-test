@@ -67,24 +67,36 @@ export const Top_ToolBar = ({
   }
 
   const handleDownload = async () => {
+    if (!pdfFile) return;
+
     try {
-      if (!pdfFile) return;
+      console.log('Starting download with:', {
+        pdfFile,
+        annotationCount: annotations?.length,
+        zoomLevel
+      });
 
-      // Modify the PDF with annotations
-      const modifiedPdfBytes = await modifyPDF(pdfFile, annotations);
+      const modifiedPdfBytes = await modifyPDF(pdfFile, annotations, zoomLevel);
+      console.log('PDF modified successfully, creating blob...');
 
-      // Create a blob and download
       const blob = new Blob([modifiedPdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
+      
+      const filename = pdfFile instanceof File 
+        ? pdfFile.name.replace('.pdf', '')
+        : 'document';
+      
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'annotated-document.pdf';
+      link.download = `${filename}-annotated.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+      
+      console.log('Download complete');
     } catch (error) {
-      console.error('Error downloading modified PDF:', error);
+      console.error('Error in download process:', error);
     }
   };
 

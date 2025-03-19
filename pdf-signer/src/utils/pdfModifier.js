@@ -1,16 +1,23 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
-export async function modifyPDF(file, annotations) {
+export async function modifyPDF(file, annotations, zoomLevel = 100) {
   try {
-    // Read the PDF file
-    const arrayBuffer = await file.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(arrayBuffer);
-    const pages = pdfDoc.getPages();
-    
-    // Embed the standard font for text annotations
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    console.log('Starting PDF modification with:', {
+      fileExists: !!file,
+      annotationCount: annotations?.length,
+      zoomLevel
+    });
 
-    // Group annotations by page
+    const existingPdfBytes = await file.arrayBuffer();
+    const pdfDoc = await PDFDocument.load(existingPdfBytes, {
+      updateMetadata: false,
+      ignoreEncryption: true
+    });
+
+    const pages = pdfDoc.getPages();
+    const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    // Group annotations by page and log
     const annotationsByPage = annotations.reduce((acc, annotation) => {
       const pageNum = annotation.page - 1;
       if (!acc[pageNum]) acc[pageNum] = [];
@@ -18,119 +25,175 @@ export async function modifyPDF(file, annotations) {
       return acc;
     }, {});
 
-    // Process each page
+    console.log('Annotations by page:', annotationsByPage);
+
+    // Process each page's annotations
     Object.entries(annotationsByPage).forEach(([pageNum, pageAnnotations]) => {
       const page = pages[pageNum];
       const { width, height } = page.getSize();
+      console.log(`Processing page ${pageNum} with dimensions:`, { width, height });
 
-      // PDF points per inch (72 points = 1 inch)
-      const POINTS_PER_INCH = 72;
-      // Screen DPI (usually 96)
-      const SCREEN_DPI = 96;
+      // Convert viewport coordinates to PDF space
+      const toPDFSpace = (x, y) => ({
+        x: (x * width) / zoomLevel,
+        y: height - ((y * height) / zoomLevel)
+      });
 
-      // Calculate scale factors (convert from screen coordinates to PDF points)
-      const scaleX = POINTS_PER_INCH / SCREEN_DPI;
-      const scaleY = POINTS_PER_INCH / SCREEN_DPI;
+      // Convert dimensions to PDF space
+      const toPDFDimension = (size) => (size * width) / zoomLevel;
 
       pageAnnotations.forEach((annotation) => {
         try {
+          console.log('Processing annotation:', {
+            type: annotation.type,
+            x: annotation.x,
+            y: annotation.y,
+            width: annotation.width,
+            height: annotation.height
+          });
+
           switch (annotation.type) {
-            case 'highlight':
+            case 'highlight': {
+              const { x, y } = toPDFSpace(annotation.x, annotation.y);
+              const w = toPDFDimension(annotation.width);
+              const h = toPDFDimension(annotation.height);
+
+              // Draw highlight with searchable text
               page.drawRectangle({
-                x: annotation.x * scaleX,
-                y: height - (annotation.y * scaleY) - (annotation.height * scaleY),
-                width: annotation.width * scaleX,
-                height: annotation.height * scaleY,
-                color: rgb(1, 0.9, 0),
+                x,
+                y: y - h,
+                width: w,
+                height: h,
+                color: rgb(1, 0.95, 0),
                 opacity: 0.3,
+                borderWidth: 0
               });
-              break;
 
-            case 'underline':
-              page.drawLine({
-                start: { 
-                  x: annotation.x * scaleX,
-                  y: height - (annotation.y * scaleY)
-                },
-                end: { 
-                  x: (annotation.x + annotation.width) * scaleX,
-                  y: height - (annotation.y * scaleY)
-                },
-                thickness: 1.5,
-                color: rgb(0, 0, 0),
-                opacity: 1,
-              });
-              break;
-
-            case 'draw':
-              if (annotation.path && annotation.path.length > 1) {
-                const pathPoints = annotation.path.map(point => ({
-                  x: point.x * scaleX,
-                  y: height - (point.y * scaleY)
-                }));
-
-                for (let i = 1; i < pathPoints.length; i++) {
-                  const color = annotation.color ? hexToRgb(annotation.color) : rgb(0, 0, 0);
-                  page.drawLine({
-                    start: pathPoints[i - 1],
-                    end: pathPoints[i],
-                    thickness: annotation.strokeWidth || 2,
-                    color,
-                    opacity: 1,
-                  });
-                }
-              }
-              break;
-
-            case 'comment':
-              if (annotation.comment) {
-                const commentText = `📝 ${annotation.comment}`;
-                page.drawText(commentText, {
-                  x: annotation.x * scaleX,
-                  y: height - (annotation.y * scaleY),
-                  size: 12,
-                  font,
-                  color: rgb(0, 0, 1),
-                  maxWidth: width * 0.3,
-                  lineHeight: 14,
+              if (annotation.text) {
+                page.drawText(annotation.text, {
+                  x,
+                  y: y - h,
+                  font: helvetica,
+                  size: h,
+                  color: rgb(0, 0, 0),
+                  opacity: 0 // Invisible but searchable
                 });
               }
               break;
+            }
 
-            case 'signature':
-              if (annotation.path && annotation.path.length > 1) {
-                const signaturePoints = annotation.path.map(point => ({
-                  x: point.x * scaleX,
-                  y: height - (point.y * scaleY)
-                }));
+            case 'underline': {
+              const { x, y } = toPDFSpace(annotation.x, annotation.y);
+              const w = toPDFDimension(annotation.width);
 
-                for (let i = 1; i < signaturePoints.length; i++) {
+              page.drawLine({
+                start: { x, y },
+                end: { x: x + w, y },
+                thickness: 1.5,
+                color: rgb(0, 0, 0),
+                opacity: 0.8,
+                lineCap: 'round'
+              });
+              break;
+            }
+
+            case 'draw': {
+              if (annotation.path?.length > 1) {
+                const color = annotation.color ? hexToRgb(annotation.color) : rgb(0, 0, 0);
+                
+                // Create smooth path for drawing
+                for (let i = 1; i < annotation.path.length; i++) {
+                  const start = toPDFSpace(annotation.path[i - 1].x, annotation.path[i - 1].y);
+                  const end = toPDFSpace(annotation.path[i].x, annotation.path[i].y);
+
                   page.drawLine({
-                    start: signaturePoints[i - 1],
-                    end: signaturePoints[i],
-                    thickness: 2,
-                    color: rgb(0, 0, 0),
+                    start,
+                    end,
+                    thickness: annotation.strokeWidth || 2,
+                    color,
                     opacity: 1,
+                    lineCap: 'round',
+                    lineJoin: 'round'
                   });
                 }
               }
               break;
+            }
+
+            case 'comment': {
+              if (annotation.comment) {
+                const { x, y } = toPDFSpace(annotation.x, annotation.y);
+                const boxWidth = Math.min(200, width * 0.3);
+                const boxHeight = 40;
+                const padding = 5;
+
+                // Draw comment box with background
+                page.drawRectangle({
+                  x,
+                  y: y - boxHeight,
+                  width: boxWidth,
+                  height: boxHeight,
+                  color: rgb(0.98, 0.98, 0.98),
+                  borderColor: rgb(0.7, 0.7, 0.7),
+                  borderWidth: 1,
+                  opacity: 1
+                });
+
+                // Draw comment text with word wrapping
+                const words = annotation.comment.split(' ');
+                let line = '';
+                let yOffset = padding;
+                const fontSize = 9;
+                const lineHeight = fontSize * 1.2;
+
+                for (const word of words) {
+                  const testLine = line + word + ' ';
+                  const textWidth = helvetica.widthOfTextAtSize(testLine, fontSize);
+
+                  if (textWidth > boxWidth - 2 * padding && line !== '') {
+                    page.drawText(line.trim(), {
+                      x: x + padding,
+                      y: y - yOffset - fontSize - padding,
+                      size: fontSize,
+                      font: helvetica,
+                      color: rgb(0, 0, 0)
+                    });
+                    line = word + ' ';
+                    yOffset += lineHeight;
+                  } else {
+                    line = testLine;
+                  }
+                }
+
+                if (line.trim()) {
+                  page.drawText(line.trim(), {
+                    x: x + padding,
+                    y: y - yOffset - fontSize - padding,
+                    size: fontSize,
+                    font: helvetica,
+                    color: rgb(0, 0, 0)
+                  });
+                }
+              }
+              break;
+            }
           }
         } catch (error) {
-          console.error(`Error processing annotation of type ${annotation.type}:`, error);
+          console.error('Error processing annotation:', error, annotation);
         }
       });
     });
 
-    // Save the modified PDF
+    console.log('Saving modified PDF...');
     const modifiedPdfBytes = await pdfDoc.save({
-      useObjectStreams: true,
+      useObjectStreams: false,
       addDefaultPage: false,
+      preserveExistingEncryption: true
     });
-
+    console.log('PDF modification complete');
     return modifiedPdfBytes;
   } catch (error) {
-    console.error('Error modifying PDF:', error);
+    console.error('Error in modifyPDF:', error);
     throw error;
   }
 }
