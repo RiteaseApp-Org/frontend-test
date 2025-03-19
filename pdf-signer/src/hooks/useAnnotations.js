@@ -2,7 +2,6 @@ import { useDrawAnnotation } from './annotations/useDrawAnnotation';
 import { useHighlightAnnotation } from './annotations/useHighlightAnnotation';
 import { useCommentAnnotation } from './annotations/useCommentAnnotation';
 import { useUnderlineAnnotation } from './annotations/useUnderlineAnnotation';
-import { useSignatureAnnotation } from './annotations/useSignatureAnnotation';
 import { useAnnotationHistory } from './useAnnotationHistory';
 import { useCallback, useEffect, useRef } from 'react';
 
@@ -46,17 +45,6 @@ export const useAnnotations = (currentPage, zoomLevel, file) => {
   } = useUnderlineAnnotation(currentPage, zoomLevel);
 
   const {
-    signatureAnnotations,
-    setSignatureAnnotations,
-    isDrawingSignature,
-    currentSignature,
-    handleSignatureStart,
-    handleSignatureMove,
-    handleSignatureEnd,
-    deleteSignature,
-  } = useSignatureAnnotation(currentPage, zoomLevel, file);
-
-  const {
     currentState,
     recordAction,
     undo,
@@ -71,7 +59,6 @@ export const useAnnotations = (currentPage, zoomLevel, file) => {
     ...highlightAnnotations,
     ...commentAnnotations,
     ...underlineAnnotations,
-    ...signatureAnnotations,
   ];
 
   // Record the current state whenever annotations change
@@ -91,14 +78,12 @@ export const useAnnotations = (currentPage, zoomLevel, file) => {
       highlights: highlightAnnotations,
       comments: commentAnnotations,
       underlines: underlineAnnotations,
-      signatures: signatureAnnotations
     });
   }, [
     drawAnnotations,
     highlightAnnotations,
     commentAnnotations,
     underlineAnnotations,
-    signatureAnnotations,
     recordAction
   ]);
 
@@ -112,14 +97,12 @@ export const useAnnotations = (currentPage, zoomLevel, file) => {
     setHighlightAnnotations(currentState.highlights || []);
     setCommentAnnotations(currentState.comments || []);
     setUnderlineAnnotations(currentState.underlines || []);
-    setSignatureAnnotations(currentState.signatures || []);
   }, [
     currentState,
     setDrawAnnotations,
     setHighlightAnnotations,
     setCommentAnnotations,
     setUnderlineAnnotations,
-    setSignatureAnnotations
   ]);
 
   const handleUndoWithCheck = useCallback(() => {
@@ -151,12 +134,6 @@ export const useAnnotations = (currentPage, zoomLevel, file) => {
     deleteComment,
     drawColor,
     setDrawColor,
-    isDrawingSignature,
-    currentSignature,
-    handleSignatureStart,
-    handleSignatureMove,
-    handleSignatureEnd,
-    deleteSignature,
     undo: handleUndoWithCheck,
     redo: handleRedoWithCheck,
     canUndo,

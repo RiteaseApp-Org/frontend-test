@@ -5,7 +5,6 @@ import {
   Highlighter,
   MessageSquare,
   Pen,
-  FilePenLineIcon as Signature,
   Underline,
 } from "lucide-react";
 
@@ -184,27 +183,6 @@ const Sidebar = ({
           )}
         </div>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant={selectedTool === "signature" ? "secondary" : "ghost"}
-                size="icon"
-                className={cn(
-                  "rounded-xl cursor-pointer transition-all duration-200",
-                  selectedTool === "signature"
-                    ? "bg-zinc-200 "
-                    : "hover:bg-zinc-100 hover:shadow-sm"
-                )}
-                onClick={() => handleToolSelect("signature")}
-              >
-                <Signature className="h-5 w-5" />
-                <span className="sr-only">Signature</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Signature</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
 
       {/* Document Viewer */}
