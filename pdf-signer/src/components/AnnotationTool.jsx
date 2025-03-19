@@ -44,6 +44,8 @@ const AnnotationTool = () => {
         canRedo={canRedo}
         annotations={annotations}
         pdfFile={pdfFile}
+        zoomLevel={zoomLevel}
+        setZoomLevel={setZoomLevel}
       />
 
       <div className="flex flex-1 overflow-hidden">
@@ -52,7 +54,9 @@ const AnnotationTool = () => {
           setCurrentPage={setCurrentPage} 
           numPages={numPages} 
           setNumPages={setNumPages} 
-          file={pdfFile} 
+          file={pdfFile}
+          zoomLevel={zoomLevel}
+          setZoomLevel={setZoomLevel}
         />
       </div> 
 

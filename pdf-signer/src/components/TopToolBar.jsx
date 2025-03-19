@@ -32,9 +32,10 @@ export const Top_ToolBar = ({
   canRedo,
   annotations,
   pdfFile,
+  zoomLevel,
+  setZoomLevel,
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const [zoomLevel, setZoomLevel] = useState(100)
   const [selectedTool, setSelectedTool] = useState(null)
 
   const handleZoomIn = () => {

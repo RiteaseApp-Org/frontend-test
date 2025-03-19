@@ -22,9 +22,16 @@ import { DocumentViewer } from "./document-viewer";
 import { cn } from "@/lib/utils";
 import DrawColorPicker from "./ui/draw-color-picker";
 
-const Sidebar = ({ file, currentPage, numPages, setNumPages, setCurrentPage }) => {
+const Sidebar = ({ 
+  file, 
+  currentPage, 
+  setCurrentPage, 
+  numPages, 
+  setNumPages,
+  zoomLevel,
+  setZoomLevel,
+}) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [zoomLevel, setZoomLevel] = useState(100);
   const [selectedTool, setSelectedTool] = useState(null);
   const [drawColor, setDrawColor] = useState("#000000");
   const [strokeWidth, setStrokeWidth] = useState(2);
