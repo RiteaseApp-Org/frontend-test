@@ -7,7 +7,7 @@ import { DocumentViewer } from '@/components/document-viewer';
 import { ToolBar } from '@/components/tool-bar';
 import { DocumentState } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { Download, FileText, Settings, Upload } from 'lucide-react';
+import { Download, FileText, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { cn } from '@/lib/utils';
@@ -98,11 +98,11 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen bg-neutral-950 text-foreground flex flex-col">
+        <div className="min-h-screen bg-neutral-950 text-white flex flex-col">
             <BackgroundBeams />
 
             {/* Header */}
-            <header className="bg-background/80 backdrop-blur-md border-b border-muted/20 py-4 sticky top-0 z-50">
+            <header className="bg-background/80 backdrop-blur-md border-b border-muted/20 py-4 sticky top-0 z-50 text-white">
                 <div className="container flex items-center justify-between px-6">
                     <div className="flex items-center space-x-2 font-semibold text-xl">
                         <FileText className="h-7 w-7 text-primary" />
@@ -125,38 +125,30 @@ export default function Home() {
             {/* Main Content */}
             <main className="container flex-1 flex flex-col lg:flex-row p-6 lg:p-8 gap-8">
                 {/* Sidebar for Tools */}
-                <aside className="lg:w-72 xl:w-80 bg-background/50 backdrop-blur-md rounded-xl p-6 shadow-lg border border-muted/20 relative">
+                <aside className="lg:w-72 xl:w-80 bg-background/50 backdrop-blur-md rounded-xl p-6 shadow-lg border border-muted/20 relative text-white">
                     <BackgroundBeams />
                     <div className="flex flex-col space-y-6 relative z-10">
-                        <h2 className="text-lg font-semibold text-foreground/80">Tools</h2>
-                        <ToolBar
-                            documentState={documentState}
-                            setDocumentState={setDocumentState}
-                        />
+                        <h2 className="text-lg font-semibold">Tools</h2>
+                        <ToolBar documentState={documentState} setDocumentState={setDocumentState} />
                     </div>
                 </aside>
 
                 {/* Document Viewer Area */}
-                <div className="flex-1 bg-background/50 backdrop-blur-md rounded-xl shadow-lg border border-muted/20 overflow-hidden">
+                <div className="flex-1 bg-background/50 backdrop-blur-md rounded-xl shadow-lg border border-muted/20 overflow-hidden text-white">
                     {!documentState.file ? (
                         <div className="p-8 flex flex-col items-center justify-center h-full space-y-6">
                             <div className="text-center space-y-2">
                                 <Upload className="h-12 w-12 text-primary mx-auto" />
                                 <h2 className="text-2xl font-semibold">Upload a Document</h2>
-                                <p className="text-foreground/60">Drag and drop a PDF file to get started.</p>
+                                <p className="text-gray-200">Drag and drop a PDF file to get started.</p>
                             </div>
                             <DocumentUploader onFileUpload={handleFileUpload} />
                         </div>
                     ) : (
-                        <DocumentViewer
-                            documentState={documentState}
-                            setDocumentState={setDocumentState}
-                        />
+                        <DocumentViewer documentState={documentState} setDocumentState={setDocumentState} />
                     )}
                 </div>
             </main>
-
-           
         </div>
     );
 }
