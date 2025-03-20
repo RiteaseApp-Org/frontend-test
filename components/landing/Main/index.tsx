@@ -100,7 +100,14 @@ const Main = () => {
                 setColor={setSelectedColor}
                 setAnnotationType={setAnnotation}
                 pdfUrl={pdfURL}
-                annotations={annotations}
+                annotations={annotations
+                  .filter((ann): ann is Annotation & { type: 'highlight' | 'underline' | 'signature' } => 
+                    ['highlight', 'underline', 'signature'].includes(ann.type as 'highlight' | 'underline' | 'signature')
+                  )
+                  .map(ann => ({
+                    ...ann,
+                    dataUrl: ann.dataUrl || undefined // Convert null to undefined
+                  }))}
                 fileName={selectedFile?.name}
               />
             </div>

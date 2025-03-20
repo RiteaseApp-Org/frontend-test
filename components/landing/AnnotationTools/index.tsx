@@ -21,7 +21,15 @@ interface PropType {
   color: string;
   setAnnotationType: (t: AnnotationType) => void;
   pdfUrl: string;
-  annotations: any[];
+  annotations: {
+    page: number;
+    type: "highlight" | "underline" | "signature";
+    x: number;
+    y: number;
+    width?: number;
+    height?: number;
+    dataUrl?: string;
+  }[];
   fileName: string | undefined;
 }
 
@@ -35,8 +43,8 @@ const AnnotationTools: React.FC<PropType> = ({
 }) => {
   const [selectedTool, setSelectedTool] = useState<string>("hand");
 
-  const handleToolSelection = (value: any) => {
-    setSelectedTool(value);
+  const handleToolSelection = (value: AnnotationType | "color" | "hand" | "comment") => {
+    setSelectedTool(value || "hand");
 
     if (value === "color") return;
     setAnnotationType(value);

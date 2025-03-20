@@ -1,5 +1,6 @@
 import { Annotation } from "@/types/AnnotationTypes";
 import { hexToRgba } from "@/utils/hexToRgba";
+import Image from "next/image";
 
 interface PropType {
   annotation: Annotation;
@@ -17,10 +18,11 @@ const RenderAnnotation: React.FC<PropType> = ({ annotation }) => {
           height: annotation.height,
         }}
       >
-        <img
+        <Image
           src={annotation.dataUrl || ""}
           alt="Signature"
-          style={{ width: "100%", height: "auto" }}
+          layout="fill"
+          objectFit="contain"
         />
       </div>
     );

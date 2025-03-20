@@ -15,7 +15,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pd
 
 interface PropType {
   pdfUrl: string;
-  annotations: any[];
+  annotations: Annotation[];
   addAnnotation: (annotation: Annotation) => void;
   annotationType: AnnotationType;
   selectedColor: string;
@@ -45,7 +45,7 @@ const PDFViewer: React.FC<PropType> = ({
   const signaturePadRef = useRef<SignatureCanvas | null>(null);
 
   // selecting text in pdf
-  const handleTextSelection = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleTextSelection = () => {
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
 
@@ -220,8 +220,8 @@ const PDFViewer: React.FC<PropType> = ({
                 width: 160,
                 height: 75,
                 className: "border-2",
-                onMouseDown: () => {
-                  handleCanvasMouseDown;
+                onMouseDown: (e: React.MouseEvent) => {
+                  handleCanvasMouseDown(e);
                 },
               }}
             />
