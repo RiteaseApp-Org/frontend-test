@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400&display=swap'); /* Modern Font Pairing */
+
+:root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 245, 245, 250; /* Lighter background */
+    --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-start-rgb: 20, 20, 30; /* Darker, richer dark mode */
+        --background-end-rgb: 30, 30, 40;
+    }
+}
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 3.9%;
+        --primary: 220 50% 50%; /* Vibrant Primary - Teal/Blue Hue */
+        --primary-foreground: 0 0% 100%;
+        --secondary: 240 10% 96.1%;
+        --secondary-foreground: 0 0% 9%;
+        --accent: 220 20% 90%; /* Soft Accent */
+        --accent-foreground: 0 0% 9%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --muted: 220 20% 94%;
+        --muted-foreground: 220 20% 60%;
+        --border: 220 20% 85%;
+        --input: 220 20% 85%;
+        --ring: var(--primary);
+        --radius: 0.75rem; /* Slightly rounded corners */
+    }
+
+    .dark {
+        --background: 0 0% 10%; /* Darker Background */
+        --foreground: 0 0% 95%; /* Lighter Foreground */
+        --primary: 220 40% 70%; /* Adjusted Primary for Dark Mode */
+        --primary-foreground: 0 0% 0%;
+        --secondary: 240 10% 20%;
+        --secondary-foreground: 0 0% 90%;
+        --accent: 220 20% 25%;
+        --accent-foreground: 0 0% 90%;
+        --destructive: 0 62.8% 40%;
+        --destructive-foreground: 0 0% 98%;
+        --muted: 220 20% 20%;
+        --muted-foreground: 220 20% 70%;
+        --border: 220 20% 30%;
+        --input: 220 20% 30%;
+        --ring: var(--primary);
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border; /* Still applying border class, but will redefine it below */
+    }
+    body {
+        @apply bg-background text-foreground font-poppins antialiased; /* Poppins font, antialiased */
+        @apply transition-colors duration-300; /* Smooth transitions */
+    }
+
+    /* Redefine border to be subtle or remove entirely for some elements */
+    .border {
+        border-width: 1px;
+        border-style: solid;
+        border-color: var(--border); /* Use the defined border color */
+    }
+
+    .no-border { /* Utility class to remove borders */
+        border: none !important;
+    }
+}
+
+html {
+    @apply transition-colors duration-300;
+}
+
+.dark {
+    --background: #121212; /* Fallback dark background (if needed) */
+    --foreground: #ffffff; /* Fallback dark foreground */
+}
+
+.light {
+    --background: #ffffff; /* Fallback light background */
+    --foreground: #000000; /* Fallback light foreground */
+}
+
+.bg-background {
+    background-color: var(--background);
+}
+
+.text-foreground {
+    color: var(--foreground);
+}
+
+/* Custom Font Family Utilities */
+.font-poppins {
+    font-family: 'Poppins', sans-serif;
+}
+.font-mono {
+    font-family: 'Roboto Mono', monospace;
+}
