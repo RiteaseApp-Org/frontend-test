@@ -19,16 +19,22 @@ export async function exportPdfWithAnnotations(
     if (pageIndex < 0 || pageIndex >= pages.length) continue;
     
     const page = pages[pageIndex];
-    const {  height } = page.getSize();
+    const { height } = page.getSize();
     
+    // Scale factor to convert from screen coordinates (612) to PDF coordinates (96)
+    const SCALE_FACTOR = 96 / 612;  // This will convert 612 to 96
     
     for (const annotation of annotationsByPage[pageNum]) {
       switch (annotation.type) {
         case 'highlight':
           if (annotation.width && annotation.height) {
             const color = parseColor(annotation.color ?? '#FFEB3B');
+            
+            // Convert only x position to PDF coordinates, keep original width
+            const pdfX = annotation.position.x * SCALE_FACTOR;
+            
             page.drawRectangle({
-              x: annotation.position.x,
+              x: pdfX,
               y: height - annotation.position.y - annotation.height,
               width: annotation.width,
               height: annotation.height,
@@ -41,9 +47,13 @@ export async function exportPdfWithAnnotations(
         case 'underline':
           if (annotation.width) {
             const color = parseColor(annotation.color ?? '#4285F4');
+            
+            // Convert only x position to PDF coordinates, keep original width
+            const pdfX = annotation.position.x * SCALE_FACTOR;
+            
             page.drawLine({
-              start: { x: annotation.position.x, y: height - annotation.position.y - 2 },
-              end: { x: annotation.position.x + annotation.width, y: height - annotation.position.y - 2 },
+              start: { x: pdfX, y: height - annotation.position.y - 2 },
+              end: { x: pdfX + annotation.width, y: height - annotation.position.y - 2 },
               thickness: 2,
               color,
             });
