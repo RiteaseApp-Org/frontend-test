@@ -24,6 +24,17 @@ A powerful Next.js application for annotating PDF documents with various tools i
 - React-signature-canvas (for signature functionality)
 - React-dropzone (for file upload)
 
+## Challenges faced
+
+- Getting the annotations to export in the correct position in the PDF
+- Getting annotation to start from the correct position in the PDF
+
+## What I would do differently next time
+
+- Work more on fixing the starting o=position of the annotations so it's clearer to the user where the annotation will start
+- Write Tests for all annotation functionality and export functionality
+
+
 ## Getting Started
 
 ### Prerequisites
