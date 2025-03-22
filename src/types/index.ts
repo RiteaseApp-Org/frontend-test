@@ -1,4 +1,4 @@
-
+import { Document } from 'react-pdf';
 
 export interface Position {
   x: number;
@@ -24,7 +24,7 @@ export interface PdfViewerState {
   numPages: number;
   currentPage: number;
   scale: number;
-  pdfDocument: any | null;
+  pdfDocument: ReturnType<typeof Document> | null;
   currentTool: 'cursor' | 'highlight' | 'underline' | 'comment' | 'signature';
   currentColor: string;
 } 

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Annotation, PdfViewerState } from '../types';
+import { Document } from 'react-pdf';
 
 
 export const usePdfViewer = () => {
@@ -23,7 +24,7 @@ export const usePdfViewer = () => {
     setState((prev) => ({ ...prev, numPages }));
   };
 
-  const setPdfDocument = (pdfDocument: any | null) => {
+  const setPdfDocument = (pdfDocument: ReturnType<typeof Document> | null) => {
     setState((prev) => ({ ...prev, pdfDocument }));
   };
 
